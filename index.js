@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder } = require('discord.js');
 const express = require('express');
 
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
@@ -12,7 +12,7 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds]
 });
 
-client.once('clientReady', () => {
+client.once('clientReady', async () => {
   console.log(`Logged in as ${client.user.tag}`);
 
   client.user.setPresence({
@@ -21,6 +21,41 @@ client.once('clientReady', () => {
   });
 
   console.log("BotGhost status removed!");
+
+  const commands = [
+    new SlashCommandBuilder()
+      .setName('minky')
+      .setDescription('Get a random Minky cat image')
+  ];
+
+  const rest = new REST({ version: '10' }).setToken(TOKEN);
+
+  try {
+    console.log('Registering slash commands...');
+    await rest.put(
+      Routes.applicationCommands(client.user.id),
+      { body: commands }
+    );
+    console.log('Slash commands registered!');
+  } catch (error) {
+    console.error('Error registering commands:', error);
+  }
+});
+
+client.on('interactionCreate', async (interaction) => {
+  if (!interaction.isChatInputCommand()) return;
+
+  if (interaction.commandName === 'minky') {
+    try {
+      await interaction.reply({
+        content: "Here's a random Minky 🐱",
+        files: ["https://minky.materii.dev"]
+      });
+    } catch (err) {
+      console.error(err);
+      await interaction.reply('❌ Failed to fetch Minky image.');
+    }
+  }
 });
 
 client.on('error', (error) => {

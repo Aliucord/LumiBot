@@ -1,5 +1,6 @@
 const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType } = require('discord.js');
 const express = require('express');
+const { Pool } = require('pg');
 
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 
@@ -7,6 +8,10 @@ if (!TOKEN) {
   console.error('Error: DISCORD_BOT_TOKEN environment variable is not set');
   process.exit(1);
 }
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL
+});
 
 const client = new Client({
   intents: [
@@ -18,6 +23,96 @@ const client = new Client({
 
 const responders = {};
 const minkyIntervals = {};
+
+async function loadAutoresponders() {
+  try {
+    const result = await pool.query('SELECT * FROM autoresponders');
+    for (const row of result.rows) {
+      if (!responders[row.guild_id]) responders[row.guild_id] = [];
+      responders[row.guild_id].push({
+        trigger: row.trigger_phrase,
+        response: row.response,
+        channelId: row.channel_id
+      });
+    }
+    console.log(`Loaded ${result.rows.length} autoresponders from database`);
+  } catch (err) {
+    console.error('Error loading autoresponders:', err);
+  }
+}
+
+async function saveAutoresponder(guildId, trigger, response, channelId) {
+  try {
+    await pool.query(
+      'INSERT INTO autoresponders (guild_id, trigger_phrase, response, channel_id) VALUES ($1, $2, $3, $4) ON CONFLICT (guild_id, trigger_phrase, channel_id) DO UPDATE SET response = $3',
+      [guildId, trigger, response, channelId]
+    );
+  } catch (err) {
+    console.error('Error saving autoresponder:', err);
+  }
+}
+
+async function deleteAutoresponderFromDb(guildId, trigger, channelId) {
+  try {
+    if (channelId) {
+      await pool.query(
+        'DELETE FROM autoresponders WHERE guild_id = $1 AND trigger_phrase = $2 AND channel_id = $3',
+        [guildId, trigger, channelId]
+      );
+    } else {
+      await pool.query(
+        'DELETE FROM autoresponders WHERE guild_id = $1 AND trigger_phrase = $2 AND channel_id IS NULL',
+        [guildId, trigger]
+      );
+    }
+  } catch (err) {
+    console.error('Error deleting autoresponder:', err);
+  }
+}
+
+async function loadMinkyIntervals() {
+  try {
+    const result = await pool.query('SELECT * FROM minky_intervals');
+    for (const row of result.rows) {
+      const channel = await client.channels.fetch(row.channel_id).catch(() => null);
+      if (channel) {
+        const key = `${row.guild_id}-${row.channel_id}`;
+        const timer = setInterval(() => sendMinkyToChannel(channel), row.interval_ms);
+        minkyIntervals[key] = {
+          timer,
+          interval: row.interval_str,
+          channelId: row.channel_id,
+          guildId: row.guild_id
+        };
+      }
+    }
+    console.log(`Loaded ${result.rows.length} minky intervals from database`);
+  } catch (err) {
+    console.error('Error loading minky intervals:', err);
+  }
+}
+
+async function saveMinkyInterval(guildId, channelId, intervalStr, intervalMs) {
+  try {
+    await pool.query(
+      'INSERT INTO minky_intervals (guild_id, channel_id, interval_str, interval_ms) VALUES ($1, $2, $3, $4) ON CONFLICT (guild_id, channel_id) DO UPDATE SET interval_str = $3, interval_ms = $4',
+      [guildId, channelId, intervalStr, intervalMs]
+    );
+  } catch (err) {
+    console.error('Error saving minky interval:', err);
+  }
+}
+
+async function deleteMinkyIntervalFromDb(guildId, channelId) {
+  try {
+    await pool.query(
+      'DELETE FROM minky_intervals WHERE guild_id = $1 AND channel_id = $2',
+      [guildId, channelId]
+    );
+  } catch (err) {
+    console.error('Error deleting minky interval:', err);
+  }
+}
 
 function parseInterval(intervalStr) {
   const match = intervalStr.match(/^(\d+)(m|h|d)$/i);
@@ -125,6 +220,9 @@ client.once('clientReady', async () => {
   } catch (error) {
     console.error('Error registering commands:', error);
   }
+
+  await loadAutoresponders();
+  await loadMinkyIntervals();
 });
 
 client.on('interactionCreate', async (interaction) => {
@@ -245,6 +343,8 @@ client.on('interactionCreate', async (interaction) => {
       guildId
     };
 
+    await saveMinkyInterval(guildId, channel.id, intervalStr, intervalMs);
+
     const units = { m: 'minute(s)', h: 'hour(s)', d: 'day(s)' };
     const match = intervalStr.match(/^(\d+)(m|h|d)$/i);
     const displayInterval = `${match[1]} ${units[match[2].toLowerCase()]}`;
@@ -273,6 +373,7 @@ client.on('interactionCreate', async (interaction) => {
 
     clearInterval(minkyIntervals[key].timer);
     delete minkyIntervals[key];
+    await deleteMinkyIntervalFromDb(guildId, channel.id);
 
     await interaction.reply(`✅ Stopped scheduled Minky images for ${channel}.`);
   }
@@ -307,6 +408,8 @@ client.on('interactionCreate', async (interaction) => {
       channelId
     });
 
+    await saveAutoresponder(guildId, trigger, response, channelId);
+
     await interaction.reply(`✅ Autoresponder added for trigger: "${trigger}"${channel ? ` in ${channel}` : ''}`);
   }
 
@@ -337,7 +440,9 @@ client.on('interactionCreate', async (interaction) => {
       });
     }
 
+    const deletedResponder = responders[guildId][index];
     responders[guildId].splice(index, 1);
+    await deleteAutoresponderFromDb(guildId, trigger, deletedResponder.channelId);
     await interaction.reply(`✅ Autoresponder deleted for trigger: "${trigger}"`);
   }
 });

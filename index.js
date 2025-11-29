@@ -165,10 +165,19 @@ client.on('interactionCreate', async (interaction) => {
     const response = interaction.options.getString('response');
     const channel = interaction.options.getChannel('channel');
 
+    const channelId = channel?.id || null;
+    const existingIndex = responders[guildId].findIndex(r => r.trigger === trigger && r.channelId === channelId);
+    if (existingIndex !== -1) {
+      return interaction.reply({
+        content: `❌ An autoresponder with trigger "${trigger}"${channel ? ` in ${channel}` : ''} already exists. Delete it first to replace it.`,
+        ephemeral: true
+      });
+    }
+
     responders[guildId].push({
       trigger,
       response,
-      channelId: channel?.id || null
+      channelId
     });
 
     await interaction.reply(`✅ Autoresponder added for trigger: "${trigger}"${channel ? ` in ${channel}` : ''}`);
@@ -210,7 +219,7 @@ client.on('error', (error) => {
   console.error('Discord client error:', error);
 });
 
-client.on('messageCreate', (message) => {
+client.on('messageCreate', async (message) => {
   if (message.author.bot || !message.guild) return;
 
   const guildResponders = responders[message.guild.id] || [];
@@ -220,8 +229,8 @@ client.on('messageCreate', (message) => {
     const channelMatch = !r.channelId || message.channel.id === r.channelId;
 
     if (matches && channelMatch) {
-      message.reply(r.response);
-      break;
+      await message.reply(r.response);
+      return;
     }
   }
 });

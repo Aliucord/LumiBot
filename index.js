@@ -9,8 +9,14 @@ if (!TOKEN) {
 }
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds]
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent
+  ]
 });
+
+const responders = [];
 
 client.once('clientReady', async () => {
   console.log(`Logged in as ${client.user.tag}`);
@@ -25,7 +31,22 @@ client.once('clientReady', async () => {
   const commands = [
     new SlashCommandBuilder()
       .setName('minky')
-      .setDescription('Get a random Minky cat image')
+      .setDescription('Get a random Minky cat image'),
+    new SlashCommandBuilder()
+      .setName('addresponder')
+      .setDescription('Add a new autoresponder')
+      .addStringOption(option =>
+        option.setName('trigger')
+          .setDescription('Trigger phrase')
+          .setRequired(true))
+      .addStringOption(option =>
+        option.setName('response')
+          .setDescription('Response message')
+          .setRequired(true))
+      .addChannelOption(option =>
+        option.setName('channel')
+          .setDescription('Optional channel restriction')
+          .setRequired(false))
   ];
 
   const rest = new REST({ version: '10' }).setToken(TOKEN);
@@ -61,10 +82,38 @@ client.on('interactionCreate', async (interaction) => {
       await interaction.reply('❌ Failed to fetch Minky image.');
     }
   }
+
+  if (interaction.commandName === 'addresponder') {
+    const trigger = interaction.options.getString('trigger').toLowerCase();
+    const response = interaction.options.getString('response');
+    const channel = interaction.options.getChannel('channel');
+
+    responders.push({
+      trigger,
+      response,
+      channelId: channel?.id || null
+    });
+
+    await interaction.reply(`✅ Autoresponder added for trigger: "${trigger}"${channel ? ` in ${channel}` : ''}`);
+  }
 });
 
 client.on('error', (error) => {
   console.error('Discord client error:', error);
+});
+
+client.on('messageCreate', (message) => {
+  if (message.author.bot) return;
+
+  for (const r of responders) {
+    const matches = message.content.toLowerCase().includes(r.trigger);
+    const channelMatch = !r.channelId || message.channel.id === r.channelId;
+
+    if (matches && channelMatch) {
+      message.reply(r.response);
+      break;
+    }
+  }
 });
 
 client.login(TOKEN);

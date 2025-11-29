@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType } = require('discord.js');
 const express = require('express');
 
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
@@ -17,6 +17,40 @@ const client = new Client({
 });
 
 const responders = {};
+const minkyIntervals = {};
+
+function parseInterval(intervalStr) {
+  const match = intervalStr.match(/^(\d+)(m|h|d)$/i);
+  if (!match) return null;
+  
+  const value = parseInt(match[1]);
+  const unit = match[2].toLowerCase();
+  
+  const multipliers = {
+    'm': 60 * 1000,
+    'h': 60 * 60 * 1000,
+    'd': 24 * 60 * 60 * 1000
+  };
+  
+  return value * multipliers[unit];
+}
+
+async function sendMinkyToChannel(channel) {
+  try {
+    const response = await fetch(`https://minky.materii.dev?cb=${Date.now()}`);
+    const imageUrl = response.url;
+    
+    await channel.send({
+      embeds: [{
+        title: "Here's a random Minky 🐱",
+        image: { url: imageUrl },
+        color: 0xFFC0CB
+      }]
+    });
+  } catch (err) {
+    console.error('Failed to send scheduled Minky:', err);
+  }
+}
 
 client.once('clientReady', async () => {
   console.log(`Logged in as ${client.user.tag}`);
@@ -32,6 +66,26 @@ client.once('clientReady', async () => {
     new SlashCommandBuilder()
       .setName('minky')
       .setDescription('Get a random Minky cat image'),
+    new SlashCommandBuilder()
+      .setName('minkyinterval')
+      .setDescription('Schedule automatic Minky images at a set interval')
+      .addStringOption(option =>
+        option.setName('interval')
+          .setDescription('Time interval (e.g., 30m, 1h, 6h, 1d)')
+          .setRequired(true))
+      .addChannelOption(option =>
+        option.setName('channel')
+          .setDescription('Channel to send Minky images to')
+          .addChannelTypes(ChannelType.GuildText)
+          .setRequired(true)),
+    new SlashCommandBuilder()
+      .setName('stopminky')
+      .setDescription('Stop scheduled Minky images for a channel')
+      .addChannelOption(option =>
+        option.setName('channel')
+          .setDescription('Channel to stop Minky images in')
+          .addChannelTypes(ChannelType.GuildText)
+          .setRequired(true)),
     new SlashCommandBuilder()
       .setName('addresponder')
       .setDescription('Add a new autoresponder')
@@ -149,6 +203,78 @@ client.on('interactionCreate', async (interaction) => {
       console.error(err);
       await interaction.reply('❌ Failed to fetch Minky image.');
     }
+  }
+
+  if (interaction.commandName === 'minkyinterval') {
+    if (!interaction.member.permissions.has('Administrator')) {
+      return interaction.reply({
+        content: '❌ You need Administrator permissions to use this command.',
+        ephemeral: true
+      });
+    }
+
+    const intervalStr = interaction.options.getString('interval');
+    const channel = interaction.options.getChannel('channel');
+    const guildId = interaction.guildId;
+    const key = `${guildId}-${channel.id}`;
+
+    const intervalMs = parseInterval(intervalStr);
+    if (!intervalMs) {
+      return interaction.reply({
+        content: '❌ Invalid interval format. Use format like: 30m, 1h, 6h, 1d',
+        ephemeral: true
+      });
+    }
+
+    if (intervalMs < 5 * 60 * 1000) {
+      return interaction.reply({
+        content: '❌ Minimum interval is 5 minutes (5m).',
+        ephemeral: true
+      });
+    }
+
+    if (minkyIntervals[key]) {
+      clearInterval(minkyIntervals[key].timer);
+    }
+
+    const timer = setInterval(() => sendMinkyToChannel(channel), intervalMs);
+    minkyIntervals[key] = {
+      timer,
+      interval: intervalStr,
+      channelId: channel.id,
+      guildId
+    };
+
+    const units = { m: 'minute(s)', h: 'hour(s)', d: 'day(s)' };
+    const match = intervalStr.match(/^(\d+)(m|h|d)$/i);
+    const displayInterval = `${match[1]} ${units[match[2].toLowerCase()]}`;
+
+    await interaction.reply(`✅ Minky images will be sent to ${channel} every ${displayInterval}!`);
+  }
+
+  if (interaction.commandName === 'stopminky') {
+    if (!interaction.member.permissions.has('Administrator')) {
+      return interaction.reply({
+        content: '❌ You need Administrator permissions to use this command.',
+        ephemeral: true
+      });
+    }
+
+    const channel = interaction.options.getChannel('channel');
+    const guildId = interaction.guildId;
+    const key = `${guildId}-${channel.id}`;
+
+    if (!minkyIntervals[key]) {
+      return interaction.reply({
+        content: `❌ No scheduled Minky images found for ${channel}.`,
+        ephemeral: true
+      });
+    }
+
+    clearInterval(minkyIntervals[key].timer);
+    delete minkyIntervals[key];
+
+    await interaction.reply(`✅ Stopped scheduled Minky images for ${channel}.`);
   }
 
   if (interaction.commandName === 'addresponder') {

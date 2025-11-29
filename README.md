@@ -1,4 +1,4 @@
-# Discord Bot
+# Discord Lumi Bot
 
 ## Overview
 A simple Discord bot built with Node.js and discord.js 

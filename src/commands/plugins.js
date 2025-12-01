@@ -185,7 +185,7 @@ module.exports = {
     if (filteredPlugins.length === 0) {
       const reply = await message.reply('No plugins found.');
       if (!send) {
-        setTimeout(() => reply.delete().catch(() => {}), 10000);
+        setTimeout(() => reply.delete().catch(() => {}), 30000);
       }
       return;
     }
@@ -212,7 +212,7 @@ module.exports = {
     
     const reply = await message.reply(replyOptions);
     if (!send) {
-      setTimeout(() => reply.delete().catch(() => {}), 10000);
+      setTimeout(() => reply.delete().catch(() => {}), 30000);
     }
   },
 

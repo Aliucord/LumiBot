@@ -1,8 +1,6 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 
-const ALIUCORD_GUILD_ID = '811255666990907402';
 const MANIFEST_URL = 'https://plugins.aliucord.com/manifest.json';
-const PLUGINS_PER_PAGE = 5;
 
 let cachedPlugins = [];
 let cacheTimestamp = 0;
@@ -26,13 +24,15 @@ async function fetchPlugins() {
 
     if (Array.isArray(data)) {
       for (const plugin of data) {
-        if (plugin.name && plugin.sourceUrl) {
+        if (plugin.name && plugin.url) {
+          const authors = Array.isArray(plugin.authors) ? plugin.authors.join(', ') : 'Unknown';
           plugins.push({
             name: plugin.name,
             description: plugin.description || 'No description',
-            downloadLink: plugin.sourceUrl,
-            info: plugin.author ? `by ${plugin.author}` : '',
-            author: plugin.author || 'Unknown'
+            url: plugin.url,
+            version: plugin.version || '',
+            authors: authors,
+            changelog: plugin.changelog || ''
           });
         }
       }
@@ -60,15 +60,15 @@ function filterPlugins(plugins, search) {
   return plugins.filter(plugin => 
     plugin.name.toLowerCase().includes(searchLower) ||
     plugin.description.toLowerCase().includes(searchLower) ||
-    plugin.author.toLowerCase().includes(searchLower)
+    plugin.authors.toLowerCase().includes(searchLower)
   );
 }
 
-function formatPlugin(plugin) {
-  let text = `[**${plugin.name}**](${plugin.downloadLink})\n`;
-  text += `${plugin.description}`;
-  if (plugin.info) {
-    text += ` - ${plugin.info}`;
+function formatPluginLine(plugin) {
+  let text = `[**${plugin.name}**](${plugin.url})\n`;
+  text += plugin.description;
+  if (plugin.authors) {
+    text += ` - ${plugin.authors}`;
   }
   return text;
 }
@@ -99,7 +99,7 @@ module.exports = {
     }
 
     plugins.forEach((plugin, index) => {
-      content += formatPlugin(plugin);
+      content += formatPluginLine(plugin);
       if (index < plugins.length - 1) content += '\n\n';
     });
 
@@ -121,7 +121,7 @@ module.exports = {
     }
 
     plugins.forEach((plugin, index) => {
-      content += formatPlugin(plugin);
+      content += formatPluginLine(plugin);
       if (index < plugins.length - 1) content += '\n\n';
     });
 
@@ -130,6 +130,5 @@ module.exports = {
 
   fetchPlugins,
   filterPlugins,
-  initializePluginCache,
-  ALIUCORD_GUILD_ID
+  initializePluginCache
 };

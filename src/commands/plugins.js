@@ -96,12 +96,12 @@ function filterPlugins(plugins, search) {
 }
 
 function formatPlugin(plugin) {
-  let text = `**${plugin.name}**\n`;
-  text += `${plugin.description}\n`;
+  let text = `[**${plugin.name}**](${plugin.downloadLink})\n`;
+  text += `||${plugin.description}`;
   if (plugin.info) {
-    text += `*${plugin.info}*\n`;
+    text += ` - ${plugin.info}`;
   }
-  text += `${plugin.downloadLink}`;
+  text += `||`;
   return text;
 }
 

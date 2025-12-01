@@ -12,7 +12,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "discord.js": "^14.25.1",
-    "pg": "^8.16.3"
+    "@libsql/client": "^0.6.0",
+    "discord.js": "^14.25.1"
   }
 }

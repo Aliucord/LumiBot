@@ -1,7 +1,8 @@
-const { Pool } = require('pg');
+const { createClient } = require('@libsql/client');
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
+const client = createClient({
+  url: process.env.TURSO_CONNECTION_URL,
+  authToken: process.env.TURSO_AUTH_TOKEN
 });
 
 const responders = {};
@@ -10,32 +11,32 @@ const minkyIntervals = {};
 async function initializeDatabase() {
   try {
     // Create autoresponders table if it doesn't exist
-    await pool.query(`
+    await client.execute(`
       CREATE TABLE IF NOT EXISTS autoresponders (
-        guild_id VARCHAR(255) NOT NULL,
-        trigger_phrase VARCHAR(255) NOT NULL,
+        guild_id TEXT NOT NULL,
+        trigger_phrase TEXT NOT NULL,
         response TEXT NOT NULL,
-        channel_id VARCHAR(255),
+        channel_id TEXT,
         PRIMARY KEY (guild_id, trigger_phrase, channel_id)
       )
     `);
 
     // Create minky_intervals table if it doesn't exist
-    await pool.query(`
+    await client.execute(`
       CREATE TABLE IF NOT EXISTS minky_intervals (
-        guild_id VARCHAR(255) NOT NULL,
-        channel_id VARCHAR(255) NOT NULL,
-        interval_str VARCHAR(50) NOT NULL,
+        guild_id TEXT NOT NULL,
+        channel_id TEXT NOT NULL,
+        interval_str TEXT NOT NULL,
         interval_ms INTEGER NOT NULL,
         PRIMARY KEY (guild_id, channel_id)
       )
     `);
 
     // Create bot_status table if it doesn't exist
-    await pool.query(`
+    await client.execute(`
       CREATE TABLE IF NOT EXISTS bot_status (
-        status VARCHAR(50) NOT NULL,
-        activity VARCHAR(50) NOT NULL,
+        status TEXT NOT NULL,
+        activity TEXT NOT NULL,
         message TEXT NOT NULL
       )
     `);
@@ -48,7 +49,7 @@ async function initializeDatabase() {
 
 async function loadAutoresponders() {
   try {
-    const result = await pool.query('SELECT * FROM autoresponders');
+    const result = await client.execute('SELECT * FROM autoresponders');
     for (const row of result.rows) {
       if (!responders[row.guild_id]) responders[row.guild_id] = [];
       responders[row.guild_id].push({
@@ -65,10 +66,10 @@ async function loadAutoresponders() {
 
 async function saveAutoresponder(guildId, trigger, response, channelId) {
   try {
-    await pool.query(
-      'INSERT INTO autoresponders (guild_id, trigger_phrase, response, channel_id) VALUES ($1, $2, $3, $4) ON CONFLICT (guild_id, trigger_phrase, channel_id) DO UPDATE SET response = $3',
-      [guildId, trigger, response, channelId]
-    );
+    await client.execute({
+      sql: 'INSERT OR REPLACE INTO autoresponders (guild_id, trigger_phrase, response, channel_id) VALUES (?, ?, ?, ?)',
+      args: [guildId, trigger, response, channelId]
+    });
   } catch (err) {
     console.error('Error saving autoresponder:', err);
   }
@@ -77,15 +78,15 @@ async function saveAutoresponder(guildId, trigger, response, channelId) {
 async function deleteAutoresponderFromDb(guildId, trigger, channelId) {
   try {
     if (channelId) {
-      await pool.query(
-        'DELETE FROM autoresponders WHERE guild_id = $1 AND trigger_phrase = $2 AND channel_id = $3',
-        [guildId, trigger, channelId]
-      );
+      await client.execute({
+        sql: 'DELETE FROM autoresponders WHERE guild_id = ? AND trigger_phrase = ? AND channel_id = ?',
+        args: [guildId, trigger, channelId]
+      });
     } else {
-      await pool.query(
-        'DELETE FROM autoresponders WHERE guild_id = $1 AND trigger_phrase = $2 AND channel_id IS NULL',
-        [guildId, trigger]
-      );
+      await client.execute({
+        sql: 'DELETE FROM autoresponders WHERE guild_id = ? AND trigger_phrase = ? AND channel_id IS NULL',
+        args: [guildId, trigger]
+      });
     }
   } catch (err) {
     console.error('Error deleting autoresponder:', err);
@@ -94,10 +95,10 @@ async function deleteAutoresponderFromDb(guildId, trigger, channelId) {
 
 async function saveMinkyInterval(guildId, channelId, intervalStr, intervalMs) {
   try {
-    await pool.query(
-      'INSERT INTO minky_intervals (guild_id, channel_id, interval_str, interval_ms) VALUES ($1, $2, $3, $4) ON CONFLICT (guild_id, channel_id) DO UPDATE SET interval_str = $3, interval_ms = $4',
-      [guildId, channelId, intervalStr, intervalMs]
-    );
+    await client.execute({
+      sql: 'INSERT OR REPLACE INTO minky_intervals (guild_id, channel_id, interval_str, interval_ms) VALUES (?, ?, ?, ?)',
+      args: [guildId, channelId, intervalStr, intervalMs]
+    });
   } catch (err) {
     console.error('Error saving minky interval:', err);
   }
@@ -105,10 +106,10 @@ async function saveMinkyInterval(guildId, channelId, intervalStr, intervalMs) {
 
 async function deleteMinkyIntervalFromDb(guildId, channelId) {
   try {
-    await pool.query(
-      'DELETE FROM minky_intervals WHERE guild_id = $1 AND channel_id = $2',
-      [guildId, channelId]
-    );
+    await client.execute({
+      sql: 'DELETE FROM minky_intervals WHERE guild_id = ? AND channel_id = ?',
+      args: [guildId, channelId]
+    });
   } catch (err) {
     console.error('Error deleting minky interval:', err);
   }
@@ -116,7 +117,7 @@ async function deleteMinkyIntervalFromDb(guildId, channelId) {
 
 async function loadMinkyIntervalsFromDb() {
   try {
-    const result = await pool.query('SELECT * FROM minky_intervals');
+    const result = await client.execute('SELECT * FROM minky_intervals');
     return result.rows;
   } catch (err) {
     console.error('Error loading minky intervals:', err);
@@ -126,11 +127,11 @@ async function loadMinkyIntervalsFromDb() {
 
 async function saveBotStatus(status, activity, message) {
   try {
-    await pool.query('DELETE FROM bot_status');
-    await pool.query(
-      'INSERT INTO bot_status (status, activity, message) VALUES ($1, $2, $3)',
-      [status, activity, message]
-    );
+    await client.execute('DELETE FROM bot_status');
+    await client.execute({
+      sql: 'INSERT INTO bot_status (status, activity, message) VALUES (?, ?, ?)',
+      args: [status, activity, message]
+    });
   } catch (err) {
     console.error('Error saving bot status:', err);
   }
@@ -138,7 +139,7 @@ async function saveBotStatus(status, activity, message) {
 
 async function loadBotStatus() {
   try {
-    const result = await pool.query('SELECT * FROM bot_status LIMIT 1');
+    const result = await client.execute('SELECT * FROM bot_status LIMIT 1');
     return result.rows[0] || null;
   } catch (err) {
     console.error('Error loading bot status:', err);
@@ -147,7 +148,7 @@ async function loadBotStatus() {
 }
 
 module.exports = {
-  pool,
+  client,
   responders,
   minkyIntervals,
   initializeDatabase,

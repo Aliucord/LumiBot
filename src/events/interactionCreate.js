@@ -35,6 +35,27 @@ module.exports = {
 };
 
 async function handleButton(interaction) {
+  if (interaction.customId.startsWith('plugins_')) {
+    const pluginsCommand = interaction.client.commands.get('plugins');
+    if (pluginsCommand && pluginsCommand.handleButton) {
+      const parts = interaction.customId.split('_');
+      const action = parts[1];
+      const page = parts[2] || '0';
+      const searchBase64 = parts[3] || null;
+      
+      try {
+        await pluginsCommand.handleButton(interaction, action, page, searchBase64);
+      } catch (error) {
+        console.error('Error handling plugins button:', error);
+        await interaction.reply({
+          content: '❌ Error loading plugins. Please try again.',
+          ephemeral: true
+        });
+      }
+    }
+    return;
+  }
+
   if (interaction.customId === 'install_android') {
     const isAliucord = interaction.guildId === '811255666990907402';
     

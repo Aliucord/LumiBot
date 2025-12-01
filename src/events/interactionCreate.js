@@ -41,12 +41,12 @@ async function handleButton(interaction) {
     const pluginsCommand = interaction.client.commands.get('plugins');
     if (pluginsCommand && pluginsCommand.handleButton) {
       const parts = interaction.customId.split('_');
-      const action = parts[1];
+      const action = parts[1]; // 'prev' or 'next'
       const page = parts[2] || '0';
-      const searchBase64 = parts[3] || null;
+      const hasSearch = parts[3] || '0';
       
       try {
-        await pluginsCommand.handleButton(interaction, action, page, searchBase64);
+        await pluginsCommand.handleButton(interaction, action, page, hasSearch);
       } catch (error) {
         console.error('Error handling plugins button:', error);
         await interaction.reply({

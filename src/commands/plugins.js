@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, MessageFlags } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 const MANIFEST_URL = 'https://plugins.aliucord.com/manifest.json';
+const PLUGINS_PER_PAGE = 5;
 
 let cachedPlugins = [];
 let cacheTimestamp = 0;
@@ -73,6 +74,25 @@ function formatPluginLine(plugin) {
   return text;
 }
 
+function buildPaginationRow(page, totalPages, hasSearch = false) {
+  const row = new ActionRowBuilder();
+  
+  const prevBtn = new ButtonBuilder()
+    .setCustomId(`plugins_prev_${page}${hasSearch ? '_1' : '_0'}`)
+    .setLabel('Previous')
+    .setStyle(ButtonStyle.Primary)
+    .setDisabled(page === 0);
+  
+  const nextBtn = new ButtonBuilder()
+    .setCustomId(`plugins_next_${page}${hasSearch ? '_1' : '_0'}`)
+    .setLabel('Next')
+    .setStyle(ButtonStyle.Primary)
+    .setDisabled(page === totalPages - 1);
+  
+  row.addComponents(prevBtn, nextBtn);
+  return row;
+}
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('plugins')
@@ -87,47 +107,97 @@ module.exports = {
 
     const search = interaction.options.getString('search');
     const allPlugins = await fetchPlugins();
-    const plugins = search ? filterPlugins(allPlugins, search) : allPlugins.slice(0, 5);
+    const filteredPlugins = search ? filterPlugins(allPlugins, search) : allPlugins;
 
-    if (plugins.length === 0) {
+    if (filteredPlugins.length === 0) {
       return interaction.editReply('No plugins found.');
     }
 
+    const page = 0;
+    const totalPages = Math.ceil(filteredPlugins.length / PLUGINS_PER_PAGE);
+    const start = page * PLUGINS_PER_PAGE;
+    const pagePlugins = filteredPlugins.slice(start, start + PLUGINS_PER_PAGE);
+
     let content = '';
     if (search) {
-      content += `**Search results for: "${search}"**\n\n`;
+      content += `**Search results for: "${search}"** (${filteredPlugins.length} found)\n\n`;
+    } else {
+      content += `**All Plugins** (Page ${page + 1}/${totalPages})\n\n`;
     }
 
-    plugins.forEach((plugin, index) => {
+    pagePlugins.forEach((plugin, index) => {
       content += formatPluginLine(plugin);
-      if (index < plugins.length - 1) content += '\n\n';
+      if (index < pagePlugins.length - 1) content += '\n\n';
     });
 
-    await interaction.editReply(content);
+    const row = buildPaginationRow(page, totalPages, !!search);
+    await interaction.editReply({ content, components: [row] });
+  },
+
+  async handleButton(interaction, action, page, hasSearch) {
+    const search = hasSearch === '1' ? interaction.message.content.match(/Search results for: "([^"]+)"/)?.[1] : null;
+    const allPlugins = await fetchPlugins();
+    const filteredPlugins = search ? filterPlugins(allPlugins, search) : allPlugins;
+
+    page = parseInt(page);
+    if (action === 'next') page++;
+    if (action === 'prev') page--;
+
+    const totalPages = Math.ceil(filteredPlugins.length / PLUGINS_PER_PAGE);
+    if (page < 0 || page >= totalPages) {
+      return interaction.reply({ content: 'Invalid page.', flags: MessageFlags.Ephemeral });
+    }
+
+    const start = page * PLUGINS_PER_PAGE;
+    const pagePlugins = filteredPlugins.slice(start, start + PLUGINS_PER_PAGE);
+
+    let content = '';
+    if (search) {
+      content += `**Search results for: "${search}"** (${filteredPlugins.length} found)\n\n`;
+    } else {
+      content += `**All Plugins** (Page ${page + 1}/${totalPages})\n\n`;
+    }
+
+    pagePlugins.forEach((plugin, index) => {
+      content += formatPluginLine(plugin);
+      if (index < pagePlugins.length - 1) content += '\n\n';
+    });
+
+    const row = buildPaginationRow(page, totalPages, !!search);
+    await interaction.update({ content, components: [row] });
   },
 
   async executePrefix(message, args) {
     const search = args.join(' ') || null;
     const allPlugins = await fetchPlugins();
-    const plugins = search ? filterPlugins(allPlugins, search) : allPlugins.slice(0, 5);
+    const filteredPlugins = search ? filterPlugins(allPlugins, search) : allPlugins;
 
-    if (plugins.length === 0) {
+    if (filteredPlugins.length === 0) {
       return message.reply('No plugins found.');
     }
 
+    const page = 0;
+    const totalPages = Math.ceil(filteredPlugins.length / PLUGINS_PER_PAGE);
+    const start = page * PLUGINS_PER_PAGE;
+    const pagePlugins = filteredPlugins.slice(start, start + PLUGINS_PER_PAGE);
+
     let content = '';
     if (search) {
-      content += `**Search results for: "${search}"**\n\n`;
+      content += `**Search results for: "${search}"** (${filteredPlugins.length} found)\n\n`;
+    } else {
+      content += `**All Plugins** (Page ${page + 1}/${totalPages})\n\n`;
     }
 
-    plugins.forEach((plugin, index) => {
+    pagePlugins.forEach((plugin, index) => {
       content += formatPluginLine(plugin);
-      if (index < plugins.length - 1) content += '\n\n';
+      if (index < pagePlugins.length - 1) content += '\n\n';
     });
 
-    await message.reply(content);
+    const row = buildPaginationRow(page, totalPages, !!search);
+    await message.reply({ content, components: [row] });
   },
 
+  handleButton,
   fetchPlugins,
   filterPlugins,
   initializePluginCache

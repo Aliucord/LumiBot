@@ -253,12 +253,8 @@ module.exports = {
       const allPlugins = await fetchPlugins();
       const searchLower = focusedValue.toLowerCase();
       
-      // Search by name, description, or authors - prioritize name matches
-      const nameMatches = allPlugins.filter(p => p.name.toLowerCase().includes(searchLower));
-      const descMatches = allPlugins.filter(p => !nameMatches.includes(p) && p.description.toLowerCase().includes(searchLower));
-      const authorMatches = allPlugins.filter(p => !nameMatches.includes(p) && !descMatches.includes(p) && p.authors.toLowerCase().includes(searchLower));
-      
-      const matches = [...nameMatches, ...descMatches, ...authorMatches]
+      const matches = allPlugins
+        .filter(p => p.name.toLowerCase().includes(searchLower))
         .slice(0, 25)
         .map(plugin => ({
           name: plugin.name,

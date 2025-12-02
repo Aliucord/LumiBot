@@ -74,15 +74,23 @@ async function fetchPlugins() {
     const plugins = [];
 
     if (Array.isArray(data)) {
+      let debugCount = 0;
       for (const plugin of data) {
         if (plugin.name && plugin.url) {
           const authors = Array.isArray(plugin.authors) ? plugin.authors.join(', ') : 'Unknown';
           const normalizedUrl = normalizePluginUrl(plugin.url);
           
-          // Debug logging for SilentMessages
-          if (plugin.name === 'SilentMessages') {
-            console.log(`SilentMessages original URL: ${plugin.url}`);
-            console.log(`SilentMessages normalized URL: ${normalizedUrl}`);
+          // Debug logging - print all URLs with refs/heads or raw.githubusercontent
+          if (plugin.url.includes('refs/heads') || plugin.url.includes('raw.githubusercontent')) {
+            console.log(`[DEBUG] ${plugin.name}`);
+            console.log(`  Original: ${plugin.url}`);
+            console.log(`  Normalized: ${normalizedUrl}`);
+          }
+          
+          // Also print first 3 plugins as sample
+          if (debugCount < 3) {
+            console.log(`[SAMPLE ${debugCount + 1}] ${plugin.name}: ${plugin.url}`);
+            debugCount++;
           }
           
           plugins.push({

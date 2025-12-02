@@ -19,27 +19,28 @@ function normalizePluginUrl(url) {
     const rawGithubRefsMatch = url.match(/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/refs\/heads\/(.+)/);
     if (rawGithubRefsMatch) {
       const [, user, repo, pathWithBranch] = rawGithubRefsMatch;
-      const normalized = `https://github.com/${user}/${repo}/raw/${pathWithBranch}`;
-      console.log(`Normalized URL: ${url} → ${normalized}`);
-      return normalized;
+      return `https://github.com/${user}/${repo}/raw/${pathWithBranch}`;
     }
 
     // GitHub /refs/heads/ → /raw/ conversion
     const githubRefsMatch = url.match(/github\.com\/([^/]+)\/([^/]+)\/refs\/heads\/(.+)/);
     if (githubRefsMatch) {
       const [, user, repo, pathWithBranch] = githubRefsMatch;
-      const normalized = `https://github.com/${user}/${repo}/raw/${pathWithBranch}`;
-      console.log(`Normalized URL: ${url} → ${normalized}`);
-      return normalized;
+      return `https://github.com/${user}/${repo}/raw/${pathWithBranch}`;
+    }
+
+    // jsDelivr GitHub with refs/heads: https://cdn.jsdelivr.net/gh/user/repo@refs/heads/branch/path/file.zip
+    const jsDelivrRefsMatch = url.match(/cdn\.jsdelivr\.net\/gh\/([^@/]+)\/([^@]+)@refs\/heads\/([^/]+)\/(.*)/);
+    if (jsDelivrRefsMatch) {
+      const [, user, repo, branch, path] = jsDelivrRefsMatch;
+      return `https://github.com/${user}/${repo}/raw/${branch}/${path}`;
     }
 
     // jsDelivr GitHub: https://cdn.jsdelivr.net/gh/user/repo@version/path/file.zip
     const jsDelivrMatch = url.match(/cdn\.jsdelivr\.net\/gh\/([^@/]+)\/([^@]+)@([^/]+)\/(.*)/);
     if (jsDelivrMatch) {
       const [, user, repo, version, path] = jsDelivrMatch;
-      const normalized = `https://raw.githubusercontent.com/${user}/${repo}/${version}/${path}`;
-      console.log(`Normalized URL: ${url} → ${normalized}`);
-      return normalized;
+      return `https://raw.githubusercontent.com/${user}/${repo}/${version}/${path}`;
     }
 
     // GitLab: https://gitlab.com/user/repo/-/raw/branch/path/file.zip

@@ -16,11 +16,12 @@ async function initializeDatabase() {
     console.log('Creating autoresponders table...');
     await client.execute({
       sql: `CREATE TABLE IF NOT EXISTS autoresponders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         guild_id TEXT NOT NULL,
         trigger_phrase TEXT NOT NULL,
         response TEXT NOT NULL,
         channel_id TEXT,
-        PRIMARY KEY (guild_id, trigger_phrase, channel_id)
+        UNIQUE(guild_id, trigger_phrase, channel_id)
       )`,
       args: []
     });
@@ -30,11 +31,12 @@ async function initializeDatabase() {
     console.log('Creating minky_intervals table...');
     await client.execute({
       sql: `CREATE TABLE IF NOT EXISTS minky_intervals (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         guild_id TEXT NOT NULL,
         channel_id TEXT NOT NULL,
         interval_str TEXT NOT NULL,
         interval_ms INTEGER NOT NULL,
-        PRIMARY KEY (guild_id, channel_id)
+        UNIQUE(guild_id, channel_id)
       )`,
       args: []
     });
@@ -44,6 +46,7 @@ async function initializeDatabase() {
     console.log('Creating bot_status table...');
     await client.execute({
       sql: `CREATE TABLE IF NOT EXISTS bot_status (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         status TEXT NOT NULL,
         activity TEXT NOT NULL,
         message TEXT NOT NULL

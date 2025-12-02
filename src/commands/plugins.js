@@ -14,48 +14,24 @@ function clearPluginCache() {
 }
 
 function normalizePluginUrl(url) {
-  try {
-    // GitHub /raw/refs/heads/branch/ → /raw/branch/ (remove refs/heads)
-    const githubRawRefsMatch = url.match(/github\.com\/([^/]+)\/([^/]+)\/raw\/refs\/heads\/(.+)/);
-    if (githubRawRefsMatch) {
-      const [, user, repo, pathWithBranch] = githubRawRefsMatch;
-      return `https://github.com/${user}/${repo}/raw/${pathWithBranch}`;
-    }
-
-    // raw.githubusercontent.com /refs/heads/ → /raw/ conversion
-    const rawGithubRefsMatch = url.match(/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/refs\/heads\/(.+)/);
-    if (rawGithubRefsMatch) {
-      const [, user, repo, pathWithBranch] = rawGithubRefsMatch;
-      return `https://raw.githubusercontent.com/${user}/${repo}/${pathWithBranch}`;
-    }
-
-    // jsDelivr GitHub with refs/heads: https://cdn.jsdelivr.net/gh/user/repo@refs/heads/branch/path/file.zip
-    const jsDelivrRefsMatch = url.match(/cdn\.jsdelivr\.net\/gh\/([^@/]+)\/([^@]+)@refs\/heads\/([^/]+)\/(.*)/);
-    if (jsDelivrRefsMatch) {
-      const [, user, repo, branch, path] = jsDelivrRefsMatch;
-      return `https://github.com/${user}/${repo}/raw/${branch}/${path}`;
-    }
-
-    // jsDelivr GitHub: https://cdn.jsdelivr.net/gh/user/repo@version/path/file.zip
-    const jsDelivrMatch = url.match(/cdn\.jsdelivr\.net\/gh\/([^@/]+)\/([^@]+)@([^/]+)\/(.*)/);
-    if (jsDelivrMatch) {
-      const [, user, repo, version, path] = jsDelivrMatch;
-      return `https://raw.githubusercontent.com/${user}/${repo}/${version}/${path}`;
-    }
-
-    // GitLab: https://gitlab.com/user/repo/-/raw/branch/path/file.zip
-    const gitlabMatch = url.match(/gitlab\.com\/([^/]+)\/([^/]+)\/-\/raw\/([^/]+)\/(.*)/);
-    if (gitlabMatch) {
-      const [, user, repo, branch, path] = gitlabMatch;
-      return `https://gitlab.com/${user}/${repo}/-/raw/${branch}/${path}`;
-    }
-
-    // If already in correct format or other, return as-is
-    return url;
-  } catch (err) {
-    console.error('Error normalizing URL:', url, err);
-    return url;
+  // Handle jsDelivr with @refs/heads
+  if (url.includes("cdn.jsdelivr.net") && url.includes("@refs/heads/")) {
+    return url
+      .replace("cdn.jsdelivr.net/gh/", "github.com/")
+      .replace("@refs/heads/", "raw/");
   }
+
+  // Handle GitHub refs/heads
+  if (url.includes("/raw/refs/heads/")) {
+    return url.replace("/raw/refs/heads/", "/raw/");
+  }
+
+  // Handle raw.githubusercontent refs/heads
+  if (url.includes("raw.githubusercontent.com") && url.includes("/refs/heads/")) {
+    return url.replace("/refs/heads/", "");
+  }
+
+  return url;
 }
 
 async function fetchPlugins() {
@@ -75,25 +51,10 @@ async function fetchPlugins() {
     const plugins = [];
 
     if (Array.isArray(data)) {
-      let debugCount = 0;
       for (const plugin of data) {
         if (plugin.name && plugin.url) {
           const authors = Array.isArray(plugin.authors) ? plugin.authors.join(', ') : 'Unknown';
           const normalizedUrl = normalizePluginUrl(plugin.url);
-          
-          // Debug logging - print all URLs with refs/heads or raw.githubusercontent
-          if (plugin.url.includes('refs/heads') || plugin.url.includes('raw.githubusercontent')) {
-            console.log(`[DEBUG] ${plugin.name}`);
-            console.log(`  Original: ${plugin.url}`);
-            console.log(`  Normalized: ${normalizedUrl}`);
-          }
-          
-          // Also print first 3 plugins as sample
-          if (debugCount < 3) {
-            console.log(`[SAMPLE ${debugCount + 1}] ${plugin.name}: ${plugin.url}`);
-            debugCount++;
-          }
-          
           plugins.push({
             name: plugin.name,
             description: plugin.description || 'No description',

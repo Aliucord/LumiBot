@@ -158,6 +158,8 @@ async function handleButton(interaction, action, page, hasSearch) {
       if (index < pagePlugins.length - 1) content += '\n\n';
     });
 
+    content += '\n\n-# hold this message (not the links) to install';
+
     const row = buildPaginationRow(page, totalPages, !!search);
     await interaction.update({ content, components: [row] });
   } catch (err) {
@@ -209,6 +211,8 @@ module.exports = {
       if (index < pagePlugins.length - 1) content += '\n\n';
     });
 
+    content += '\n\n-# hold this message (not the links) to install';
+
     const row = buildPaginationRow(page, totalPages, !!search);
     await interaction.editReply({ content, components: [row] });
   },
@@ -240,6 +244,8 @@ module.exports = {
       content += formatPluginLine(plugin);
       if (index < pagePlugins.length - 1) content += '\n\n';
     });
+
+    content += '\n\n-# hold this message (not the links) to install';
 
     const row = buildPaginationRow(page, totalPages, !!search);
     const replyOptions = { content, components: [row] };

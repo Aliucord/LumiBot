@@ -13,6 +13,7 @@ const minkyIntervals = {};
 async function initializeDatabase() {
   try {
     // Create autoresponders table if it doesn't exist
+    console.log('Creating autoresponders table...');
     await client.execute({
       sql: `CREATE TABLE IF NOT EXISTS autoresponders (
         guild_id TEXT NOT NULL,
@@ -23,8 +24,10 @@ async function initializeDatabase() {
       )`,
       args: []
     });
+    console.log('✓ Autoresponders table created');
 
     // Create minky_intervals table if it doesn't exist
+    console.log('Creating minky_intervals table...');
     await client.execute({
       sql: `CREATE TABLE IF NOT EXISTS minky_intervals (
         guild_id TEXT NOT NULL,
@@ -35,8 +38,10 @@ async function initializeDatabase() {
       )`,
       args: []
     });
+    console.log('✓ Minky intervals table created');
 
     // Create bot_status table if it doesn't exist
+    console.log('Creating bot_status table...');
     await client.execute({
       sql: `CREATE TABLE IF NOT EXISTS bot_status (
         status TEXT NOT NULL,
@@ -45,8 +50,9 @@ async function initializeDatabase() {
       )`,
       args: []
     });
+    console.log('✓ Bot status table created');
 
-    console.log('Database tables initialized successfully');
+    console.log('✓ Database tables initialized successfully');
   } catch (err) {
     console.error('Error initializing database:', err.message || err);
   }

@@ -64,11 +64,6 @@ module.exports = {
             inline: true
           },
           {
-            name: 'Plugins with Descriptions',
-            value: `**${withDescriptions}** (${Math.round((withDescriptions / totalPlugins) * 100)}%)`,
-            inline: false
-          },
-          {
             name: '👑 Top Authors',
             value: topAuthors,
             inline: false
@@ -142,11 +137,6 @@ module.exports = {
             name: 'Avg Plugins per Author',
             value: `**${avgPluginsPerAuthor}** plugins`,
             inline: true
-          },
-          {
-            name: 'Plugins with Descriptions',
-            value: `**${withDescriptions}** (${Math.round((withDescriptions / totalPlugins) * 100)}%)`,
-            inline: false
           },
           {
             name: '👑 Top Authors',

@@ -55,7 +55,7 @@ async function handleRandomButton(interaction, action, page) {
 
     const isSupported = isChannelSupported(interaction.channelId);
     if (isSupported) {
-      content += '\n_ _\n-# hold this message (not the links) to install';
+      content += '\n​\n-# hold this message (not the links) to install';
     }
 
     const row = buildPaginationRow(page, totalPages);

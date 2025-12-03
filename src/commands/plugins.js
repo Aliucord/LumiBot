@@ -171,7 +171,7 @@ async function handleButton(interaction, action, page, hasSearch) {
     });
 
     if (isSupported) {
-      content += '\n_ _\n-# hold this message (not the links) to install';
+      content += '\n​\n-# hold this message (not the links) to install';
     }
 
     const row = buildPaginationRow(page, totalPages, !!search);
@@ -239,7 +239,7 @@ module.exports = {
     });
 
     if (isSupported) {
-      content += '\n_ _\n-# hold this message (not the links) to install';
+      content += '\n​\n-# hold this message (not the links) to install';
     }
 
     const row = buildPaginationRow(page, totalPages, !!search);
@@ -288,7 +288,7 @@ module.exports = {
     });
 
     if (isSupported) {
-      content += '\n_ _\n-# hold this message (not the links) to install';
+      content += '\n​\n-# hold this message (not the links) to install';
     }
 
     const row = buildPaginationRow(page, totalPages, !!search);

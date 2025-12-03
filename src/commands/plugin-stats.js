@@ -49,6 +49,16 @@ module.exports = {
         .setTitle('📊 Plugin Statistics')
         .addFields(
           {
+            name: '✨ Latest Plugins',
+            value: latestPlugins,
+            inline: false
+          },
+          {
+            name: '👑 Top Authors',
+            value: topAuthors,
+            inline: false
+          },
+          {
             name: 'Total Plugins',
             value: `**${totalPlugins}** plugins`,
             inline: true
@@ -62,16 +72,6 @@ module.exports = {
             name: 'Avg Plugins per Author',
             value: `**${avgPluginsPerAuthor}** plugins`,
             inline: true
-          },
-          {
-            name: '👑 Top Authors',
-            value: topAuthors,
-            inline: false
-          },
-          {
-            name: '✨ Latest Plugins',
-            value: latestPlugins,
-            inline: false
           }
         )
         .setFooter({ text: 'Use /plugins to browse all plugins' });
@@ -124,6 +124,16 @@ module.exports = {
         .setTitle('📊 Plugin Statistics')
         .addFields(
           {
+            name: '✨ Latest Plugins',
+            value: latestPlugins,
+            inline: false
+          },
+          {
+            name: '👑 Top Authors',
+            value: topAuthors,
+            inline: false
+          },
+          {
             name: 'Total Plugins',
             value: `**${totalPlugins}** plugins`,
             inline: true
@@ -137,16 +147,6 @@ module.exports = {
             name: 'Avg Plugins per Author',
             value: `**${avgPluginsPerAuthor}** plugins`,
             inline: true
-          },
-          {
-            name: '👑 Top Authors',
-            value: topAuthors,
-            inline: false
-          },
-          {
-            name: '✨ Latest Plugins',
-            value: latestPlugins,
-            inline: false
           }
         )
         .setFooter({ text: 'Use l!plugins to browse all plugins' });

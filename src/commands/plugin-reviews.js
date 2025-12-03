@@ -24,15 +24,16 @@ function formatReviewDate(dateStr) {
 
 function buildPaginationRow(page, totalPages, type, identifier, sortBy) {
   const row = new ActionRowBuilder();
+  const encodedId = encodeIdentifier(identifier);
   
   const prevBtn = new ButtonBuilder()
-    .setCustomId(`reviews_prev_${page}_${type}_${identifier}_${sortBy}`)
+    .setCustomId(`reviews_prev_${page}_${type}_${encodedId}_${sortBy}`)
     .setLabel('Previous')
     .setStyle(ButtonStyle.Primary)
     .setDisabled(page === 0);
   
   const nextBtn = new ButtonBuilder()
-    .setCustomId(`reviews_next_${page}_${type}_${identifier}_${sortBy}`)
+    .setCustomId(`reviews_next_${page}_${type}_${encodedId}_${sortBy}`)
     .setLabel('Next')
     .setStyle(ButtonStyle.Primary)
     .setDisabled(page === totalPages - 1);
@@ -41,11 +42,13 @@ function buildPaginationRow(page, totalPages, type, identifier, sortBy) {
   return row;
 }
 
-async function handleButton(interaction, action, page, type, identifier, sortBy) {
+async function handleButton(interaction, action, page, type, encodedIdentifier, sortBy) {
   try {
     page = parseInt(page);
     if (action === 'next') page++;
     if (action === 'prev') page--;
+
+    const identifier = decodeIdentifier(encodedIdentifier);
 
     let reviews;
     let title;

@@ -1,5 +1,11 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { fetchPlugins } = require('./plugins');
+const { getTopReviewedPlugins } = require('../utils/database');
+
+function formatStars(rating) {
+  const rounded = Math.round(parseFloat(rating));
+  return '★'.repeat(rounded) + '☆'.repeat(5 - rounded);
+}
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -44,6 +50,12 @@ module.exports = {
       // Latest plugins (first in manifest)
       const latestPlugins = allPlugins.slice(0, 5).map(p => `• ${p.name}`).join('\n');
 
+      // Top reviewed plugins
+      const topReviewed = await getTopReviewedPlugins(5);
+      const topReviewedText = topReviewed.length > 0
+        ? topReviewed.map(p => `• ${p.pluginName} ${formatStars(p.avgRating)} (${p.reviewCount} reviews)`).join('\n')
+        : 'No reviews yet';
+
       const embed = new EmbedBuilder()
         .setColor(0x5865F2)
         .setTitle('📊 Plugin Statistics')
@@ -51,6 +63,11 @@ module.exports = {
           {
             name: '✨ Latest Plugins',
             value: latestPlugins,
+            inline: false
+          },
+          {
+            name: '⭐ Most Reviewed Plugins',
+            value: topReviewedText,
             inline: false
           },
           {
@@ -74,7 +91,7 @@ module.exports = {
             inline: true
           }
         )
-        .setFooter({ text: 'Use /plugins to browse all plugins' });
+        .setFooter({ text: 'Use /plugins to browse all plugins | /rate-plugin to review' });
 
       await interaction.editReply({ embeds: [embed] });
     } catch (err) {
@@ -119,6 +136,12 @@ module.exports = {
       // Latest plugins (first in manifest)
       const latestPlugins = allPlugins.slice(0, 5).map(p => `• ${p.name}`).join('\n');
 
+      // Top reviewed plugins
+      const topReviewed = await getTopReviewedPlugins(5);
+      const topReviewedText = topReviewed.length > 0
+        ? topReviewed.map(p => `• ${p.pluginName} ${formatStars(p.avgRating)} (${p.reviewCount} reviews)`).join('\n')
+        : 'No reviews yet';
+
       const embed = new EmbedBuilder()
         .setColor(0x5865F2)
         .setTitle('📊 Plugin Statistics')
@@ -126,6 +149,11 @@ module.exports = {
           {
             name: '✨ Latest Plugins',
             value: latestPlugins,
+            inline: false
+          },
+          {
+            name: '⭐ Most Reviewed Plugins',
+            value: topReviewedText,
             inline: false
           },
           {
@@ -149,7 +177,7 @@ module.exports = {
             inline: true
           }
         )
-        .setFooter({ text: 'Use l!plugins to browse all plugins' });
+        .setFooter({ text: 'Use l!plugins to browse | l!rate-plugin to review' });
 
       await message.reply({ embeds: [embed] });
     } catch (err) {

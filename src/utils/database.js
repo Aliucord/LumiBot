@@ -268,6 +268,27 @@ async function getPluginAverageRating(pluginName) {
   }
 }
 
+async function getTopReviewedPlugins(limit = 5) {
+  try {
+    const result = await client.execute({
+      sql: `SELECT plugin_name, COUNT(*) as review_count, AVG(rating) as avg_rating 
+            FROM plugin_reviews 
+            GROUP BY plugin_name 
+            ORDER BY review_count DESC, avg_rating DESC 
+            LIMIT ?`,
+      args: [limit]
+    });
+    return result.rows.map(row => ({
+      pluginName: row.plugin_name,
+      reviewCount: row.review_count,
+      avgRating: row.avg_rating ? parseFloat(row.avg_rating).toFixed(1) : null
+    }));
+  } catch (err) {
+    console.error('Error getting top reviewed plugins:', err.message || err);
+    return [];
+  }
+}
+
 module.exports = {
   client,
   responders,
@@ -286,5 +307,6 @@ module.exports = {
   getUserReviews,
   getReviewById,
   deleteReview,
-  getPluginAverageRating
+  getPluginAverageRating,
+  getTopReviewedPlugins
 };

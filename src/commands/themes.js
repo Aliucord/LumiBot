@@ -237,10 +237,15 @@ function escapeMarkdown(text) {
   return text.replace(/[*_~`[\]()]/g, '\\$&');
 }
 
+function escapeMarkdownLink(text) {
+  return text.replace(/\[/g, '\\[').replace(/\]/g, '\\]');
+}
+
 function formatThemeLine(theme) {
   const previewUrl = getPreviewForTheme(theme);
   
-  let text = `[${theme.name}](${theme.url})`;
+  const safeName = escapeMarkdownLink(theme.name);
+  let text = `[${safeName}](<${theme.url}>)`;
   if (theme.version) {
     text += ` v${escapeMarkdown(theme.version)}`;
   }

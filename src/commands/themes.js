@@ -234,7 +234,7 @@ function filterThemes(themes, search, author) {
 }
 
 function escapeMarkdown(text) {
-  return text.replace(/[*_~`[\]()]/g, '\\$&');
+  return text.replace(/(?:([#*_\-\[\]()!<>`~\\|:])|(^\s*\d+)(\.\s))/gm, '$2\\$1$3');
 }
 
 function escapeMarkdownLink(text) {

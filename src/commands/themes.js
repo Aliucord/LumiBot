@@ -295,14 +295,14 @@ function formatThemeLine(theme) {
   const previewUrl = getPreviewForTheme(theme);
   
   const safeName = escapeMarkdownLink(theme.name);
-  let text = `[${safeName}](<${theme.url}>)`;
+  let text = `[${safeName}](${theme.url})`;
   if (theme.version) {
     text += ` v${escapeMarkdown(theme.version)}`;
   }
   text += ` by ${escapeMarkdown(theme.author)}`;
   
   if (previewUrl) {
-    text += ` • [Preview](<${previewUrl}>)`;
+    text += ` • [Preview](${previewUrl})`;
   }
   
   return text;
@@ -319,7 +319,7 @@ function decodeFilter(str) {
   return Buffer.from(padded, 'base64').toString('utf8');
 }
 
-function buildPaginationRow(page, totalPages, search = null, author = null, hasPreviewsOnPage = true) {
+function buildPaginationRow(page, totalPages, search = null, author = null) {
   const row = new ActionRowBuilder();
   const encodedSearch = encodeFilter(search || '');
   const encodedAuthor = encodeFilter(author || '');
@@ -336,13 +336,7 @@ function buildPaginationRow(page, totalPages, search = null, author = null, hasP
     .setStyle(ButtonStyle.Primary)
     .setDisabled(page === totalPages - 1);
   
-  const previewBtn = new ButtonBuilder()
-    .setCustomId(`themes_preview_${page}_${encodedSearch}_${encodedAuthor}`)
-    .setLabel('Previews')
-    .setStyle(ButtonStyle.Secondary)
-    .setDisabled(!hasPreviewsOnPage);
-  
-  row.addComponents(prevBtn, nextBtn, previewBtn);
+  row.addComponents(prevBtn, nextBtn);
   return row;
 }
 
@@ -354,39 +348,6 @@ async function handleButton(interaction, action, page, encodedSearch, encodedAut
     const filteredThemes = filterThemes(allThemes, search, author);
 
     page = parseInt(page);
-    
-    if (action === 'preview') {
-      const totalPages = Math.ceil(filteredThemes.length / THEMES_PER_PAGE);
-      const start = page * THEMES_PER_PAGE;
-      const pageThemes = filteredThemes.slice(start, start + THEMES_PER_PAGE);
-      
-      const themesWithPreviews = pageThemes
-        .map(theme => ({
-          name: theme.name,
-          previewUrl: getPreviewForTheme(theme)
-        }))
-        .filter(t => t.previewUrl);
-      
-      if (themesWithPreviews.length === 0) {
-        await interaction.reply({
-          content: 'No previews available for themes on this page.',
-          flags: MessageFlags.Ephemeral
-        });
-        return;
-      }
-      
-      let previewContent = `**Theme Previews** (Page ${page + 1}/${totalPages})\n\n`;
-      themesWithPreviews.forEach((theme, index) => {
-        previewContent += `**${escapeMarkdown(theme.name)}**\n${theme.previewUrl}`;
-        if (index < themesWithPreviews.length - 1) previewContent += '\n\n';
-      });
-      
-      await interaction.reply({
-        content: previewContent,
-        flags: MessageFlags.Ephemeral
-      });
-      return;
-    }
     
     if (action === 'next') page++;
     if (action === 'prev') page--;
@@ -412,13 +373,12 @@ async function handleButton(interaction, action, page, encodedSearch, encodedAut
 
     pageThemes.forEach((theme, index) => {
       content += formatThemeLine(theme);
-      if (index < pageThemes.length - 1) content += '\n\n';
+      if (index < pageThemes.length - 1) content += '\n\n───────────────\n\n';
     });
 
     content += '\n​\n-# hold this message (not the links) to install';
 
-    const hasPreviewsOnPage = pageThemes.some(theme => getPreviewForTheme(theme));
-    const row = buildPaginationRow(page, totalPages, search, author, hasPreviewsOnPage);
+    const row = buildPaginationRow(page, totalPages, search, author);
     await interaction.update({ content, components: [row] });
     
   } catch (err) {
@@ -493,13 +453,12 @@ module.exports = {
 
     pageThemes.forEach((theme, index) => {
       content += formatThemeLine(theme);
-      if (index < pageThemes.length - 1) content += '\n\n';
+      if (index < pageThemes.length - 1) content += '\n\n───────────────\n\n';
     });
 
     content += '\n​\n-# hold this message (not the links) to install';
 
-    const hasPreviewsOnPage = pageThemes.some(theme => getPreviewForTheme(theme));
-    const row = buildPaginationRow(page, totalPages, search, author, hasPreviewsOnPage);
+    const row = buildPaginationRow(page, totalPages, search, author);
     await interaction.editReply({ content, components: [row] });
   },
 
@@ -554,13 +513,12 @@ module.exports = {
 
     pageThemes.forEach((theme, index) => {
       content += formatThemeLine(theme);
-      if (index < pageThemes.length - 1) content += '\n\n';
+      if (index < pageThemes.length - 1) content += '\n\n───────────────\n\n';
     });
 
     content += '\n​\n-# hold this message (not the links) to install';
 
-    const hasPreviewsOnPage = pageThemes.some(theme => getPreviewForTheme(theme));
-    const row = buildPaginationRow(page, totalPages, search, author, hasPreviewsOnPage);
+    const row = buildPaginationRow(page, totalPages, search, author);
     await message.reply({ content, components: [row] });
   },
 

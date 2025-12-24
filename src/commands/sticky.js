@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, MessageFlags } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags, PermissionsBitField } = require('discord.js');
 const { initializeStickyManager, setSticky, disableSticky, getSticky } = require('../utils/stickyManager');
 const { findChannel } = require('../utils/prefixParser');
 
@@ -33,9 +33,9 @@ module.exports = {
             .setRequired(false))),
 
   async execute(interaction) {
-    if (!interaction.member.permissions.has('Administrator')) {
+    if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
       return interaction.reply({
-        content: '❌ You need Administrator permissions to use this command.',
+        content: '❌ You need moderator permissions (Manage Messages) to use this command.',
         flags: MessageFlags.Ephemeral
       });
     }
@@ -67,8 +67,8 @@ ${cfg.content}`, flags: MessageFlags.Ephemeral });
   },
 
   async executePrefix(message, args, rawArgs) {
-    if (!message.member.permissions.has('Administrator')) {
-      return message.reply('❌ You need Administrator permissions to use this command.');
+    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+      return message.reply('❌ You need moderator permissions (Manage Messages) to use this command.');
     }
 
     const sub = (args[0] || '').toLowerCase();

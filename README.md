@@ -13,7 +13,7 @@
 
 
 ## Overview
-A simple Discord bot built with Node.js and discord.js, mainly used to send minky pictures
+A simple Discord bot built with Node.js and discord.js, mainly used for Aliucord
 
 Here's a random minky 🐱
 ![minky](https://minky.materii.dev)

@@ -69,6 +69,21 @@ async function initializeDatabase() {
       args: []
     });
     console.log('✓ Plugin reviews table created');
+    
+    // Create sticky_messages table if it doesn't exist
+    console.log('Creating sticky_messages table...');
+    await client.execute({
+      sql: `CREATE TABLE IF NOT EXISTS sticky_messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        guild_id TEXT NOT NULL,
+        channel_id TEXT NOT NULL,
+        content TEXT NOT NULL,
+        last_message_id TEXT,
+        UNIQUE(guild_id, channel_id)
+      )`,
+      args: []
+    });
+    console.log('✓ Sticky messages table created');
 
     console.log('✓ Database tables initialized successfully');
   } catch (err) {

@@ -61,7 +61,7 @@ module.exports = {
 
     const pipeIndex = rawArgs.indexOf('|');
     if (pipeIndex === -1) {
-      return message.reply('❌ Usage: `l!addresponder <trigger> | <response> [#channel]`\nExample: `l!addresponder hello | Hello there!`');
+      return message.reply('❌ Usage: `!addresponder <trigger> | <response> [#channel]`\nExample: `!addresponder hello | Hello there!`');
     }
 
     const trigger = rawArgs.slice(0, pipeIndex).trim().toLowerCase();
@@ -79,7 +79,7 @@ module.exports = {
     }
 
     if (!trigger || !response) {
-      return message.reply('❌ Both trigger and response are required.\nUsage: `l!addresponder <trigger> | <response> [#channel]`');
+      return message.reply('❌ Both trigger and response are required.\nUsage: `!addresponder <trigger> | <response> [#channel]`');
     }
 
     const guildId = message.guild.id;

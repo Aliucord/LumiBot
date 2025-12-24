@@ -1,6 +1,7 @@
 const { responders } = require('../utils/database');
 const { sendMinkyToChannel } = require('../utils/helpers');
 const { parseMessage } = require('../utils/prefixParser');
+const { handleMessage: handleStickyMessage } = require('../utils/stickyManager');
 
 module.exports = {
   name: 'messageCreate',
@@ -12,6 +13,9 @@ module.exports = {
       await sendMinkyToChannel(message.channel);
       return;
     }
+
+    // Always process sticky behavior for guild messages
+    await handleStickyMessage(message);
 
     const parsed = parseMessage(message);
     if (parsed) {

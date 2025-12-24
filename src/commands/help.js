@@ -28,7 +28,7 @@ module.exports = {
         },
         {
           name: '📌 Prefix Commands',
-          value: 'Use `l!` prefix for text-based versions of slash commands\n(e.g., `l!plugins`, `l!minky`, `l!help`)',
+          value: 'Use `!` prefix for text-based versions of slash commands\n(e.g., `!plugins`, `!minky`, `!help`)',
           inline: false
         },
         {
@@ -64,7 +64,7 @@ module.exports = {
         },
         {
           name: '📌 Prefix Commands',
-          value: 'Use `l!` prefix for text-based versions of slash commands\n(e.g., `l!plugins`, `l!minky`, `l!help`)',
+          value: 'Use `!` prefix for text-based versions of slash commands\n(e.g., `!plugins`, `!minky`, `!help`)',
           inline: false
         },
         {

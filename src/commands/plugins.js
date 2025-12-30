@@ -7,8 +7,27 @@ const PLUGINS_PER_PAGE = 5;
 const SUPPORTED_CHANNELS = [
   '811261298997460992',
   '847566769258233926',
-  '811262084968742932'
+  '811262084968742932',
+  '811263527239024640'
 ];
+
+const RESTRICTED_ROLES = [
+  '1397067198761144361',
+  '850135594704175125',
+  '822166495537791038'
+];
+
+function isChannelSupported(channelId) {
+  return SUPPORTED_CHANNELS.includes(channelId);
+}
+
+function hasPermission(member, channelId) {
+  // bot-spam doesn't have role restrictions
+  if (channelId === '811263527239024640') return true;
+  // Other support channels require specific roles
+  if (RESTRICTED_ROLES.some(roleId => member.roles.cache.has(roleId))) return true;
+  return false;
+}
 
 let cachedPlugins = [];
 let cacheTimestamp = 0;
@@ -295,6 +314,14 @@ module.exports = {
       return;
     }
 
+    // Role restriction check for support channels
+    if (!hasPermission(interaction.member, interaction.channelId)) {
+      return interaction.reply({
+        content: '❌ You do not have permission to use this command in this channel. Please use <#811263527239024640> instead.',
+        flags: MessageFlags.Ephemeral
+      });
+    }
+
     const send = interaction.options.getBoolean('send') ?? false;
     const deferOptions = send ? {} : { flags: MessageFlags.Ephemeral };
     await interaction.deferReply(deferOptions);
@@ -352,6 +379,17 @@ module.exports = {
         setTimeout(() => msg.delete().catch(() => {}), 30000);
       } catch (err) {
         console.error('Error sending info message:', err);
+      }
+      return;
+    }
+
+    // Role restriction check for support channels
+    if (!hasPermission(message.member, message.channelId)) {
+      try {
+        const msg = await message.reply('❌ You do not have permission to use this command in this channel. Please use <#811263527239024640> instead.');
+        setTimeout(() => msg.delete().catch(() => {}), 15000);
+      } catch (err) {
+        console.error('Error sending permission message:', err);
       }
       return;
     }

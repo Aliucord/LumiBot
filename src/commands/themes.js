@@ -4,10 +4,7 @@ const { getConfigByGuildId } = require('../utils/serverConfig');
 const THEMES_PER_PAGE = 5;
 
 const SUPPORTED_CHANNELS = [
-  '811261298997460992',
-  '847566769258233926',
-  '811262084968742932',
-  '811263527239024640'
+  '875213883776847873'
 ];
 
 const RESTRICTED_ROLES = [
@@ -21,7 +18,7 @@ function isChannelSupported(channelId) {
 }
 
 function hasPermission(member, channelId) {
-  if (channelId === '811263527239024640') return true;
+  if (channelId === '875213883776847873') return true;
   if (RESTRICTED_ROLES.some(roleId => member.roles.cache.has(roleId))) return true;
   return false;
 }
@@ -482,14 +479,14 @@ module.exports = {
     const isSupported = isChannelSupported(interaction.channelId);
     if (!isSupported) {
       return interaction.reply({
-        content: 'Please use <#811263527239024640> to use this command.',
+        content: 'Please use <#875213883776847873> to use this command.',
         flags: MessageFlags.Ephemeral
       });
     }
 
     if (!hasPermission(interaction.member, interaction.channelId)) {
       return interaction.reply({
-        content: '❌ You do not have permission to use this command in this channel. Please use <#811263527239024640> instead.',
+        content: '❌ You do not have permission to use this command in this channel. Please use <#875213883776847873> instead.',
         flags: MessageFlags.Ephemeral
       });
     }
@@ -548,7 +545,7 @@ module.exports = {
     const isSupported = isChannelSupported(message.channelId);
     if (!isSupported) {
       try {
-        const msg = await message.reply('Please use <#811263527239024640> to use this command.');
+        const msg = await message.reply('Please use <#875213883776847873> to use this command.');
         setTimeout(() => msg.delete().catch(() => {}), 30000);
       } catch (err) {
         console.error('Error sending info message:', err);
@@ -558,7 +555,7 @@ module.exports = {
 
     if (!hasPermission(message.member, message.channelId)) {
       try {
-        const msg = await message.reply('❌ You do not have permission to use this command in this channel. Please use <#811263527239024640> instead.');
+        const msg = await message.reply('❌ You do not have permission to use this command in this channel. Please use <#875213883776847873> instead.');
         setTimeout(() => msg.delete().catch(() => {}), 15000);
       } catch (err) {
         console.error('Error sending permission message:', err);

@@ -122,7 +122,7 @@ async function updateHuskboard(message, count, starboardChannelId, minStars) {
       await starboardMsg.edit({ content, embeds, components });
     }
   } else {
-    // Only use custom profile if in the specific Huskboard channel
+
     const isHuskboardChannel = message.channelId === STARBOARD_CHANNEL_ID;
     
     const webhookData = {

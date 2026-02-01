@@ -14,13 +14,11 @@ function isChannelSupported(channelId) {
 const FAKENITRO_MESSAGE = `**"FAKENITRO" PLUGINS**
 Hold this message to install them.
 **Note:** Reading [this guide](<https://aliucord.vercel.app/userpfpbg>) is necessary if you want to use UserPFP/BG.
-_ _
-- NitroSpoof (fork) for emojis.
-- BetterFakeStickers for stickers.
-- UserPFP for profile picture.
-- UserBG for banner.
 
-[links (ignore)](https://github.com/kiwi-706/AliucordPlugins/raw/builds/NitroSpoof.ziphttps://github.com/Archimedes9500/aliucord-plugins/raw/builds/BetterFakeStickers.ziphttps://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserPFP.ziphttps://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserBG.zip)`;
+[FreeNitroEmojis](https://github.com/nyxiereal/AliucordPlugins/raw/builds/FreeNitroEmojis.zip) for emojis.
+[BetterFakeStickers](https://github.com/Archimedes9500/aliucord-plugins/raw/builds/BetterFakeStickers.zip) for stickers.
+[UserPFP](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserPFP.zip) for profile picture.
+[UserBG](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserBG.zip) for banner.`;
 
 module.exports = {
   data: new SlashCommandBuilder()

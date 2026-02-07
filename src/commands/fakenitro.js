@@ -13,7 +13,7 @@ function isChannelSupported(channelId) {
 
 const FAKENITRO_MESSAGE = `**"FAKENITRO" PLUGINS**
 Hold this message to install them.
-**Note:** Reading [this guide](<https://aliucord.vercel.app/userpfpbg>) is necessary if you want to use UserPFP/BG.
+**Note:** Reading [this guide](<https://aliucord.pages.dev/documentation#userpfp-bg>) is necessary if you want to use UserPFP/BG.
 
 [FreeNitroEmojis](https://github.com/nyxiereal/AliucordPlugins/raw/builds/FreeNitroEmojis.zip) for emojis.
 [BetterFakeStickers](https://github.com/Archimedes9500/aliucord-plugins/raw/builds/BetterFakeStickers.zip) for stickers.

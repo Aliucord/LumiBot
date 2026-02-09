@@ -33,7 +33,7 @@ module.exports = {
         },
         {
           name: '💡 Tips',
-          value: '• Use `/plugins` in <#847566769258233926> to unlock "hold to install" feature',
+          value: '• Use `/plugins` in <#811263527239024640> to unlock "hold to install" feature',
           inline: false
         }
       );

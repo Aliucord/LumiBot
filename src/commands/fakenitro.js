@@ -11,14 +11,15 @@ function isChannelSupported(channelId) {
   return SUPPORTED_CHANNELS.includes(channelId);
 }
 
-const FAKENITRO_MESSAGE = `**"FAKENITRO" PLUGINS**
-Hold this message to install them.
-**Note:** Reading [this guide](<https://aliucord.pages.dev/documentation#userpfp/bg>) is necessary if you want to use UserPFP/BG.
+const FAKENITRO_MESSAGE = `**"FAKENITRO" PLUGINS
+HOLD THIS MESSAGE TO INSTALL THEM**
 
 [FreeNitroEmojis](https://github.com/nyxiereal/AliucordPlugins/raw/builds/FreeNitroEmojis.zip) for emojis.
 [BetterFakeStickers](https://github.com/Archimedes9500/aliucord-plugins/raw/builds/BetterFakeStickers.zip) for stickers.
 [UserPFP](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserPFP.zip) for profile picture.
-[UserBG](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserBG.zip) for banner.`;
+[UserBG](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserBG.zip) for banner.
+
+READING [THIS GUIDE](<https://aliucord.pages.dev/documentation#userpfp/bg>) IS NECESSARY IF YOU WANT TO USE USERPFP/BG`;
 
 module.exports = {
   data: new SlashCommandBuilder()

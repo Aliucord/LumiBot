@@ -7,6 +7,7 @@ const { initializeDatabase } = require('./utils/database');
 const { initializeStickyManager } = require('./utils/stickyManager');
 const huskboard = require('./modules/huskboard');
 const dehoist = require('./modules/dehoist');
+const codeberg = require('./modules/codeberg');
 
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 
@@ -30,6 +31,7 @@ const client = new Client({
   await initializeStickyManager();
   huskboard.init(client);
   dehoist.execute(client);
+  codeberg.execute(client);
   loadCommands(client);
   loadEvents(client);
   client.login(TOKEN);

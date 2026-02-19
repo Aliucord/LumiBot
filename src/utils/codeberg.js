@@ -7,11 +7,11 @@ const fetch = require('node-fetch');
  * @returns {Object|null} - Parsed info or null.
  */
 function parseCodebergUrl(url) {
-  const regex = /https:\/\/codeberg\.org\/([^/]+)\/([^/]+)\/src\/(?:branch|commit)\/([^/]+)\/(.+?)(?:#L(\d+)(?:-L?(\d+))?)?$/;
+  const regex = /https:\/\/codeberg\.org\/([^/]+)\/([^/]+)\/src\/(?:branch|commit)\/([^/]+)\/([^#\s]+)(?:#L(\d+)(?:-L?(\d+))?)?/;
   const match = url.match(regex);
   if (!match) return null;
 
-  const [,, owner, repo, ref, path, startLine, endLine] = match;
+  const [, owner, repo, ref, path, startLine, endLine] = match;
   return {
     owner,
     repo,

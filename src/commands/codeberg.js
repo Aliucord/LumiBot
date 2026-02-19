@@ -3,11 +3,12 @@ const { parseCodebergUrl, fetchCodebergContent, getLines } = require('../utils/c
 module.exports = {
   data: {
     name: 'codeberg',
-    description: 'Fetch and display code from Codeberg links (Kettu Server Only)',
+    description: 'Fetch and display code from Codeberg links',
     toJSON: () => ({ name: 'codeberg', description: 'Fetch and display code from Codeberg links' })
   },
   async executePrefix(message, args) {
-    if (message.guild.id !== '1368145952266911755') return;
+    // If the module already handled this message (contains #L), we don't need to do anything
+    if (message.content.includes('#L')) return;
 
     const url = args[0];
     if (!url) return message.reply('Please provide a Codeberg link.');
@@ -24,8 +25,8 @@ module.exports = {
       
       const header = `**${parsed.owner}/${parsed.repo}** - \`${parsed.path}\`${parsed.startLine ? ` (Lines ${parsed.startLine}${parsed.endLine !== parsed.startLine ? `-${parsed.endLine}` : ''})` : ''}`;
       
-      // Split if snippet is too long
-      const codeBlock = `\`\`\`${ext}\n${snippet.slice(0, 1900)}\n\`\`\``;
+      const maxCodeLength = 1900;
+      const codeBlock = `\`\`\`${ext}\n${snippet.length > maxCodeLength ? snippet.slice(0, maxCodeLength) + '\n... (truncated)' : snippet}\n\`\`\``;
       
       await message.channel.send(`${header}\n${codeBlock}`);
     } catch (err) {

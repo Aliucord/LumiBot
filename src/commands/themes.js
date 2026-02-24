@@ -199,6 +199,11 @@ function normalizeThemeUrl(url) {
     decodedUrl = url;
   }
   
+  // Handle raw.githubusercontent.com URLs - convert /@main/ or @main/ to /main/
+  if (decodedUrl.includes("raw.githubusercontent.com")) {
+    decodedUrl = decodedUrl.replace(/@([^/]+)\//, "/$1/");
+  }
+
   if (decodedUrl.includes("cdn.statically.io/gh/")) {
     return decodedUrl
       .replace("cdn.statically.io/gh/", "raw.githubusercontent.com/")
@@ -429,7 +434,7 @@ async function handleButton(interaction, action, page, encodedSearch, encodedAut
 
     pageThemes.forEach((theme, index) => {
       content += formatThemeLine(theme);
-      if (index < pageThemes.length - 1) content += '\n\n───────────────\n\n';
+      if (index < pageThemes.length - 1) content += '\n\n';
     });
 
     if (!isKettu) {
@@ -528,7 +533,7 @@ module.exports = {
 
     pageThemes.forEach((theme, index) => {
       content += formatThemeLine(theme);
-      if (index < pageThemes.length - 1) content += '\n\n───────────────\n\n';
+      if (index < pageThemes.length - 1) content += '\n\n';
     });
 
     if (!isKettu) {
@@ -613,7 +618,7 @@ module.exports = {
 
     pageThemes.forEach((theme, index) => {
       content += formatThemeLine(theme);
-      if (index < pageThemes.length - 1) content += '\n\n───────────────\n\n';
+      if (index < pageThemes.length - 1) content += '\n\n';
     });
 
     if (!isKettu) {

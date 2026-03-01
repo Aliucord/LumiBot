@@ -102,6 +102,9 @@ Install ComponentsV2 plugin.
 
 "Where is ShowHiddenChannels?"
 The plugin needed to be gone for private reasons, thanks for your understanding.
+
+"How to play audio files"
+Install https://github.com/yutaplug/Aliucord/raw/builds/AudioPlayer.zip
 ---`;
 
 async function callGeminiAPI(prompt, userId, history, systemPrompt) {

@@ -49,8 +49,10 @@ const FAQ_LIST = [
   { keywords: ["manager", "can't install aliucord"], answer: "Read #common-issues channel or stand by until a supporter can assist you." },
   { keywords: ["how to use bot commands"], answer: "Install SlashCommandsFix plugin." },
   { keywords: ["can't view bot messages"], answer: "Install ComponentsV2 plugin." },
-  { keywords: ["showhiddenchannels"], answer: "The plugin needed to be gone for private reasons, thanks for your understanding." },
+  { keywords: ["showhiddenchannels"], answer: "Aliucord does not have a plugin to show hidden channels." },
   { keywords: ["audio files", "play audio"], answer: "Install https://github.com/yutaplug/Aliucord/raw/builds/AudioPlayer.zip" },
+  { keywords: ["recommend plugins", "suggest plugins"], answer: "Plugins are subjective." },
+  { keywords: ["how to fix markdown", "how to fix big and small text", "how to fix # headers and -# subtext"], answer: "Install MoreHighlight plugin." }
 ];
 
 function matchFAQ(question) {
@@ -181,4 +183,5 @@ module.exports = {
     // Default: respond to questions in the helper channel (not used, but required for slash command compatibility)
     return;
   },
+
 };

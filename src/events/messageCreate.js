@@ -30,10 +30,10 @@ module.exports = {
       }
     }
 
-    // Helper AI: respond to any message in the helper channel
+    // Helper AI: respond to any message in any helper channel
     const aihelper = message.client.commands.get('aihelper');
-    const helperChannelId = aihelper && aihelper.getHelperChannelId && aihelper.getHelperChannelId();
-    if (aihelper && aihelper.executePrefix && helperChannelId && message.channel.id === helperChannelId) {
+    const helperChannels = aihelper && aihelper.getHelperChannels && aihelper.getHelperChannels(message.guild.id);
+    if (aihelper && aihelper.executePrefix && helperChannels && helperChannels.size && helperChannels.has(message.channel.id)) {
       // Only respond if not a command (avoid double response)
       if (!parsed) {
         await aihelper.executePrefix(message, []);

@@ -14,12 +14,13 @@ function isChannelSupported(channelId) {
 const FAKENITRO_MESSAGE = `**"FAKENITRO" PLUGINS**
 HOLD THIS MESSAGE TO INSTALL THEM
 
-[FreeNitroEmojis](https://github.com/nyxiereal/AliucordPlugins/raw/builds/FreeNitroEmojis.zip) for emojis.
-[BetterFakeStickers](https://github.com/Archimedes9500/aliucord-plugins/raw/builds/BetterFakeStickers.zip) for stickers.
+[NitroSpoof fork](https://github.com/kiwi-706/AliucordPlugins/raw/builds/NitroSpoof.zip) for emojis.
+[FakeStickers fork](https://github.com/Archimedes9500/aliucord-plugins-1/raw/4315eb5da048504832e1956994af90ac4e143f47/FakeStickers.zip) for stickers.
 [UserPFP](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserPFP.zip) for profile picture.
 [UserBG](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserBG.zip) for banner.
 
-**READING [THIS GUIDE](<https://aliucord.pages.dev/documentation#userpfp/bg>) IS NECESSARY IF YOU WANT TO USE USERPFP/BG**`;
+**READING THIS GUIDE IS NECESSARY IF YOU WANT TO USE USERPFP/BG:**
+<https://yutaplug.github.io/Aliucord/#userpfp-and-bg>`;
 
 module.exports = {
   data: new SlashCommandBuilder()

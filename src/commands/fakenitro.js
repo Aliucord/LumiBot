@@ -14,8 +14,8 @@ function isChannelSupported(channelId) {
 const FAKENITRO_MESSAGE = `**"FAKENITRO" PLUGINS**
 HOLD THIS MESSAGE TO INSTALL THEM
 
-[NitroSpoof fork](https://github.com/kiwi-706/AliucordPlugins/raw/builds/NitroSpoof.zip) for emojis.
-[FakeStickers fork](https://github.com/Archimedes9500/aliucord-plugins-1/raw/4315eb5da048504832e1956994af90ac4e143f47/FakeStickers.zip) for stickers.
+[FreeNitroEmojis](https://github.com/nyxiereal/AliucordPlugins/raw/builds/FreeNitroEmojis.zip) for emojis.
+[FakeStickers fork](https://github.com/Archimedes9500/aliucord-plugins-1/raw/builds/FakeStickers.zip) for stickers.
 [UserPFP](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserPFP.zip) for profile picture.
 [UserBG](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserBG.zip) for banner.
 

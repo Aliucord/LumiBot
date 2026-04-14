@@ -52,7 +52,6 @@ module.exports = {
         punishment = 'Mute';
         await member.timeout?.(60 * 60 * 1000, 'Anti-spam/anti-scam mute'); // 1 hour mute fallback
       } else {
-        // Softban: ban with message deletion, then unban
         await member.ban({ reason: 'Anti-spam/anti-scam softban', deleteMessageSeconds: 7 * 24 * 60 * 60 }); // delete up to 7 days
         await message.guild.members.unban(member.id, 'Softban unban');
       }
@@ -61,7 +60,6 @@ module.exports = {
       errorMsg = err.message || String(err);
     }
 
-    // Prepare embed log
     const { EmbedBuilder, ChannelType } = require('discord.js');
     const logChannelId = '816302304713900062';
     const logChannel = message.guild.channels.cache.get(logChannelId);
@@ -77,7 +75,6 @@ module.exports = {
       details = 'sent too many messages in a short time';
     }
 
-    // Calculate message count and time window
     const key = `${message.guild.id}:${message.author.id}`;
     const now = Date.now();
     const msgTimestamps = (userMessageMap.get(key) || []).filter(ts => now - ts <= 7000);

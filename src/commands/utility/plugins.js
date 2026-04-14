@@ -232,7 +232,7 @@ async function handleButton(interaction, action, page, encodedSearch, encodedAut
     const author = decodeFilter(encodedAuthor);
     const allPlugins = await fetchPlugins(interaction.guildId);
     const filteredPlugins = filterPlugins(allPlugins, search, author);
-    const { SERVER_CONFIGS } = require('../utils/serverConfig');
+    const { SERVER_CONFIGS } = require('../../utils/serverConfig');
     const isKettu = interaction.guildId === SERVER_CONFIGS.KETTU.guildId;
 
     page = parseInt(page);
@@ -343,7 +343,7 @@ module.exports = {
       return interaction.editReply('No plugins found.');
     }
 
-    const { SERVER_CONFIGS } = require('../utils/serverConfig');
+    const { SERVER_CONFIGS } = require('../../utils/serverConfig');
     const isKettu = interaction.guildId === SERVER_CONFIGS.KETTU.guildId;
     
     const page = 0;
@@ -429,7 +429,7 @@ module.exports = {
         return;
       }
 
-      const { SERVER_CONFIGS } = require('../utils/serverConfig');
+      const { SERVER_CONFIGS } = require('../../utils/serverConfig');
       const isKettu = message.guildId === SERVER_CONFIGS.KETTU.guildId;
       
       const page = 0;

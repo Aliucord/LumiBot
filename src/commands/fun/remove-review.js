@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
-const { getReviewById, deleteReview } = require('../utils/database');
+const path = require('path');
+const { getReviewById, deleteReview } = require(path.join(__dirname, '../../utils/db'));
 
 module.exports = {
   data: new SlashCommandBuilder()

@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, ChannelType, MessageFlags } = require('discord.js');
-const { minkyIntervals, deleteMinkyIntervalFromDb } = require('../utils/database');
-const { findChannel } = require('../utils/prefixParser');
+const path = require('path');
+const { minkyIntervals, deleteMinkyIntervalFromDb } = require(path.join(__dirname, '../../utils/db'));
+const { findChannel } = require(path.join(__dirname, '../../utils/prefixParser'));
 
 module.exports = {
   data: new SlashCommandBuilder()

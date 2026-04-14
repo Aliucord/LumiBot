@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
-const { responders, deleteAutoresponderFromDb } = require('../utils/database');
+const { responders, deleteAutoresponderFromDb } = require('../../utils/db');
 
 module.exports = {
   data: new SlashCommandBuilder()

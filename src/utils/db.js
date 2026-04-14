@@ -1,3 +1,4 @@
+console.log("LOADING db.js");
 const { createClient } = require('@libsql/client');
 require('dotenv').config();
 

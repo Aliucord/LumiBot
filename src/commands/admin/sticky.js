@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, MessageFlags, PermissionsBitField } = require('discord.js');
-const { setSticky, disableSticky } = require('../utils/stickyManager');
-const { findChannel } = require('../utils/prefixParser');
+const { setSticky, disableSticky } = require('../../utils/stickyManager');
+const { findChannel } = require('../../utils/prefixParser');
 
 module.exports = {
   data: new SlashCommandBuilder()

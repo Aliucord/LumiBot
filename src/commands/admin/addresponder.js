@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
-const { responders, saveAutoresponder } = require('../utils/database');
-const { findChannel } = require('../utils/prefixParser');
+const { responders, saveAutoresponder } = require('../../utils/db');
+const { findChannel } = require('../../utils/prefixParser');
 
 module.exports = {
   data: new SlashCommandBuilder()

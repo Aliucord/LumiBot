@@ -15,12 +15,11 @@ const FAKENITRO_MESSAGE = `**"FAKENITRO" PLUGINS**
 HOLD THIS MESSAGE TO INSTALL THEM
 
 [FreeNitroEmojis](https://github.com/nyxiereal/AliucordPlugins/raw/builds/FreeNitroEmojis.zip) for emojis.
-[FakeStickers](https://github.com/RhythmLunatic/aliucord-plugins/raw/builds/FakeStickers.zip) for stickers.
+[BetterFakeStickers](https://github.com/Archimedes9500/aliucord-plugins/raw/builds/BetterFakeStickers.zip) for stickers.
 [UserPFP](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserPFP.zip) for profile picture.
 [UserBG](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserBG.zip) for banner.
 
-**READING THIS GUIDE IS NECESSARY IF YOU WANT TO USE USERPFP/BG:**
-<https://yutaplug.github.io/Aliucord/#userpfp-and-bg>`;
+**READING [THIS GUIDE](<https://aliucord.pages.dev/documentation#userpfp/bg>) IS NECESSARY IF YOU WANT TO USE USERPFP/BG**`;
 
 module.exports = {
   data: new SlashCommandBuilder()

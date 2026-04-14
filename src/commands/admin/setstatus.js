@@ -1,5 +1,12 @@
 const { SlashCommandBuilder, ActivityType, MessageFlags } = require('discord.js');
-const { saveBotStatus } = require('../utils/database');
+const path = require('path');
+let saveBotStatus;
+try {
+  ({ saveBotStatus } = require(path.join(__dirname, '../../utils/db')));
+} catch (err) {
+  console.error('Failed to require db.js in setstatus.js:', err);
+  throw err;
+}
 
 const OWNER_ID = process.env.DISCORD_OWNER_ID;
 

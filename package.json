@@ -16,6 +16,6 @@
     "@sapphire/snowflake": "^3.5.5",
     "catbox.moe": "^1.0.2",
     "discord.js": "^14.25.1",
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.4.2"
   }
 }

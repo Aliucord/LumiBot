@@ -1,4 +1,4 @@
-const { client: dbClient, saveStickyMessage, deleteStickyMessage, loadStickyMessages } = require('./database');
+const { client: dbClient, saveStickyMessage, deleteStickyMessage, loadStickyMessages } = require('./db');
 
 const stickies = {};
 

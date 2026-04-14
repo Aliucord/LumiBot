@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, MessageFlags, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { getConfigByGuildId } = require('../utils/serverConfig');
+const path = require('path');
+const { getConfigByGuildId } = require(path.join(__dirname, '../../utils/serverConfig'));
 
 const PLUGINS_PER_PAGE = 5;
 

@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const path = require('path');
 const { fetchPlugins } = require('./plugins');
-const { getTopReviewedPlugins } = require('../utils/database');
+const { getTopReviewedPlugins } = require(path.join(__dirname, '../../utils/db'));
 
 function formatStars(rating) {
   const rounded = Math.round(parseFloat(rating));

@@ -1,8 +1,8 @@
 const { REST, Routes, ActivityType } = require('discord.js');
-const { loadAutoresponders, loadMinkyIntervalsFromDb, minkyIntervals, loadBotStatus } = require('../utils/database');
+const { loadAutoresponders, loadMinkyIntervalsFromDb, minkyIntervals, loadBotStatus } = require('../utils/db');
 const { sendMinkyToChannel } = require('../utils/helpers');
-const pluginsCommand = require('../commands/plugins');
-const themesCommand = require('../commands/themes');
+const path = require('path');
+const pluginsCommand = require(path.join(__dirname, '../commands/utility/plugins'));
 
 const activityTypes = {
   playing: ActivityType.Playing,
@@ -40,10 +40,6 @@ module.exports = {
 
     pluginsCommand.clearPluginCache();
     await pluginsCommand.initializePluginCache();
-    
-    themesCommand.setClient(client);
-    themesCommand.clearThemeCache();
-    await themesCommand.initializeThemeCache();
     
     const intervals = await loadMinkyIntervalsFromDb();
     for (const row of intervals) {

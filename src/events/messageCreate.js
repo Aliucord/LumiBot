@@ -1,13 +1,24 @@
-const { responders } = require('../utils/database');
+
+const { responders } = require('../utils/db');
 const { sendMinkyToChannel } = require('../utils/helpers');
 const { parseMessage } = require('../utils/prefixParser');
 const { handleMessage: handleStickyMessage } = require('../utils/stickyManager');
+const spamProtection = require('../modules/spamProtection');
 
 module.exports = {
   name: 'messageCreate',
   once: false,
   async execute(message) {
+
     if (message.author.bot) return;
+
+
+    // Spam and scam protection: check and handle before anything else
+    const spamType = spamProtection.checkSpam(message);
+    if (spamType) {
+      await spamProtection.handleSpam(message, spamType);
+      return;
+    }
 
     if (!message.guild) {
       await sendMinkyToChannel(message.channel);

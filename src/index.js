@@ -3,7 +3,7 @@ require('dotenv').config();
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 const { loadCommands } = require('./handlers/commandLoader');
 const { loadEvents } = require('./handlers/eventLoader');
-const { initializeDatabase } = require('./utils/database');
+const { initializeDatabase } = require('./utils/db');
 const { initializeStickyManager } = require('./utils/stickyManager');
 const huskboard = require('./modules/huskboard');
 const dehoist = require('./modules/dehoist');

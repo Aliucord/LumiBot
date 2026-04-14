@@ -44,18 +44,60 @@ module.exports = {
   async handleSpam(message, type) {
     const member = message.guild.members.cache.get(message.author.id);
     if (!member) return;
-    if (!member.bannable) {
-      await message.channel.send(`${member.user.tag} cannot be softbanned (missing permissions).`);
-      return;
-    }
+    let punishment = 'Softban';
+    let actionSuccess = false;
+    let errorMsg = null;
     try {
-      await member.ban({ reason: 'Anti-spam/anti-scam softban' });
-      await message.guild.members.unban(member.id, 'Softban unban');
-      let reasonMsg = 'spamming media in multiple channels (possible scam)';
-      if (type === 'invite') reasonMsg = 'spamming Discord invite links in multiple channels';
-      await message.channel.send(`${member.user.tag} has been softbanned for ${reasonMsg}`);
+      if (!member.bannable) {
+        punishment = 'Mute';
+        await member.timeout?.(60 * 60 * 1000, 'Anti-spam/anti-scam mute'); // 1 hour mute fallback
+      } else {
+        // Softban: ban with message deletion, then unban
+        await member.ban({ reason: 'Anti-spam/anti-scam softban', deleteMessageSeconds: 7 * 24 * 60 * 60 }); // delete up to 7 days
+        await message.guild.members.unban(member.id, 'Softban unban');
+      }
+      actionSuccess = true;
     } catch (err) {
-      await message.channel.send(`Failed to softban ${member.user.tag}.`);
+      errorMsg = err.message || String(err);
     }
+
+    // Prepare embed log
+    const { EmbedBuilder, ChannelType } = require('discord.js');
+    const logChannelId = '816302304713900062';
+    const logChannel = message.guild.channels.cache.get(logChannelId);
+    if (!logChannel || logChannel.type !== ChannelType.GuildText) return;
+
+    let reasonMsg = 'Attempted to spam in a channel';
+    let details = '';
+    if (type === 'media') {
+      details = 'spamming media in multiple channels (possible scam)';
+    } else if (type === 'invite') {
+      details = 'spamming Discord invite links in multiple channels';
+    } else {
+      details = 'sent too many messages in a short time';
+    }
+
+    // Calculate message count and time window
+    const key = `${message.guild.id}:${message.author.id}`;
+    const now = Date.now();
+    const msgTimestamps = (userMessageMap.get(key) || []).filter(ts => now - ts <= 7000);
+    const count = msgTimestamps.length;
+    const timeWindow = (msgTimestamps.length > 1) ? (msgTimestamps[msgTimestamps.length-1] - msgTimestamps[0]) / 1000 : 0;
+
+    const embed = new EmbedBuilder()
+      .setAuthor({ name: `${message.author.username} (${message.author.id})`, iconURL: message.author.displayAvatarURL?.() })
+      .setTitle('Attempted to spam in a channel')
+      .addFields(
+        { name: 'In', value: `<#${message.channel.id}>`, inline: false },
+        { name: 'Punishment Triggered', value: punishment + (actionSuccess ? '' : ' (Failed)'), inline: false },
+        { name: 'Details', value: details, inline: false },
+        { name: 'Messages', value: `${count} messages in ${timeWindow.toFixed(3)} seconds`, inline: false }
+      )
+      .setColor(actionSuccess ? 0xffa500 : 0xff0000)
+      .setTimestamp();
+    if (errorMsg) {
+      embed.addFields({ name: 'Error', value: errorMsg, inline: false });
+    }
+    await logChannel.send({ embeds: [embed] });
   }
 };

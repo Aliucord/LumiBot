@@ -15,7 +15,7 @@ const FAKENITRO_MESSAGE = `**"FAKENITRO" PLUGINS**
 HOLD THIS MESSAGE TO INSTALL THEM
 
 [FreeNitroEmojis](https://github.com/nyxiereal/AliucordPlugins/raw/builds/FreeNitroEmojis.zip) for emojis.
-[BetterFakeStickers](https://github.com/Archimedes9500/aliucord-plugins/raw/builds/BetterFakeStickers.zip) for stickers.
+[FakeStickers](https://github.com/RhythmLunatic/aliucord-plugins/raw/builds/FakeStickers.zip) for stickers.
 [UserPFP](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserPFP.zip) for profile picture.
 [UserBG](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserBG.zip) for banner.
 

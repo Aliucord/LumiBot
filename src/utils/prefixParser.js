@@ -1,4 +1,4 @@
-const PREFIX = '!';
+const PREFIX = '?';
 
 function parseMessage(message) {
   const content = message.content.trim();

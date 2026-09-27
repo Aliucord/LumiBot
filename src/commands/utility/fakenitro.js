@@ -11,15 +11,16 @@ function isChannelSupported(channelId) {
   return SUPPORTED_CHANNELS.includes(channelId);
 }
 
-const FAKENITRO_MESSAGE = `**"FAKENITRO" PLUGINS**
-HOLD THIS MESSAGE TO INSTALL THEM
+const FAKENITRO_MESSAGE = `# FAKENITRO PLUGINS
+**⚠️ READING [THIS GUIDE](<https://yutaplug.github.io/Aliucord/#userpfp-and-bg>) IS NECESSARY IF YOU WANT TO USE USERPFP/BG ⚠️**
 
-[FreeNitroEmojis](https://github.com/nyxiereal/AliucordPlugins/raw/builds/FreeNitroEmojis.zip) for emojis.
-[FakeStickers](https://github.com/RhythmLunatic/aliucord-plugins/raw/builds/FakeStickers.zip) for stickers.
-[UserPFP](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserPFP.zip) for profile picture.
-[UserBG](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserBG.zip) for banner.
+[FreeNitroEmojis](https://github.com/nyxiereal/AliucordPlugins/raw/builds/FreeNitroEmojis.zip) for sending emojis as URL.
+[FakeStickers](https://github.com/RhythmLunatic/aliucord-plugins/raw/builds/FakeStickers.zip) for sending stickers as URL.
+[UserPFP](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserPFP.zip) for setting a profile picture to UserPFP database.
+[UserBG](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserBG.zip) for setting a banner to UserBG database.
+[FakeDecor](fdsdfdf) for setting an avatar decoration to Decor database.
 
-**READING [THIS GUIDE](<https://aliucord.pages.dev/documentation#userpfp/bg>) IS NECESSARY IF YOU WANT TO USE USERPFP/BG**`;
+-# Hold this message to install them.`;
 
 module.exports = {
   data: new SlashCommandBuilder()

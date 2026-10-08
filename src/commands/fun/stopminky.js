@@ -4,6 +4,7 @@ const { minkyIntervals, deleteMinkyIntervalFromDb } = require(path.join(__dirnam
 const { findChannel } = require(path.join(__dirname, '../../utils/prefixParser'));
 
 module.exports = {
+  guildOnly: true,
   data: new SlashCommandBuilder()
     .setName('stopminky')
     .setDescription('Stop scheduled Minky images for a channel')

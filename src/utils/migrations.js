@@ -58,6 +58,18 @@ const runMigrations = async (client) => {
           await client.execute({ sql: 'ALTER TABLE sticky_messages ADD COLUMN include_warning INTEGER NOT NULL DEFAULT 1', args: [] });
         }
       }
+    },
+    {
+      // db.js reads/writes message_content (the column name in the original production table),
+      // but fresh databases were created with only `content`
+      id: '0003_sticky_message_content',
+      run: async () => {
+        const info = await client.execute({ sql: 'PRAGMA table_info(sticky_messages)', args: [] });
+        const cols = new Set(info.rows.map(r => r.name || r.column_name || r[1]));
+        if (!cols.has('message_content')) {
+          await client.execute({ sql: "ALTER TABLE sticky_messages ADD COLUMN message_content TEXT NOT NULL DEFAULT ''", args: [] });
+        }
+      }
     }
   ];
 

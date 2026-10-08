@@ -4,39 +4,9 @@ const { getConfigByGuildId } = require(path.join(__dirname, '../../utils/serverC
 
 const PLUGINS_PER_PAGE = 5;
 
-// Supported channels for "hold to install" feature
-const SUPPORTED_CHANNELS = [
-  '811261298997460992',
-  '847566769258233926',
-  '811262084968742932',
-  '811263527239024640'
-];
-
-const RESTRICTED_ROLES = [
-  '1397067198761144361',
-  '850135594704175125',
-  '822166495537791038'
-];
-
-function isChannelSupported(channelId) {
-  return SUPPORTED_CHANNELS.includes(channelId);
-}
-
-function hasPermission(member, channelId) {
-  // bot-spam doesn't have role restrictions
-  if (channelId === '811263527239024640') return true;
-  // Other support channels require specific roles
-  if (RESTRICTED_ROLES.some(roleId => member.roles.cache.has(roleId))) return true;
-  return false;
-}
-
 let cachedPlugins = [];
 let cacheTimestamp = 0;
 const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours
-
-function isChannelSupported(channelId) {
-  return SUPPORTED_CHANNELS.includes(channelId);
-}
 
 // Force cache refresh on startup
 function clearPluginCache() {
@@ -248,7 +218,6 @@ async function handleButton(interaction, action, page, encodedSearch, encodedAut
     const pagePlugins = filteredPlugins.slice(start, start + PLUGINS_PER_PAGE);
 
     let content = '';
-    const isSupported = isChannelSupported(interaction.channelId);
     const hasFilter = search || author;
     if (hasFilter) {
       let filterText = [];
@@ -264,7 +233,7 @@ async function handleButton(interaction, action, page, encodedSearch, encodedAut
       if (index < pagePlugins.length - 1) content += '\n\n';
     });
 
-    if (isSupported && !isKettu) {
+    if (!isKettu) {
       content += '\n​\n-# hold this message (not the links) to install';
     }
 
@@ -306,30 +275,6 @@ module.exports = {
         .setRequired(false)),
 
   async execute(interaction) {
-    const isSupported = isChannelSupported(interaction.channelId);
-
-    // Only allow command in supported channels
-    if (!isSupported) {
-      await interaction.deferReply();
-      try {
-        const msg = await interaction.followUp({
-          content: 'Please use <#811263527239024640> to use this command.'
-        });
-        setTimeout(() => msg.delete().catch(() => {}), 30000);
-      } catch (err) {
-        console.error('Error sending info message:', err);
-      }
-      return;
-    }
-
-    // Role restriction check for support channels
-    if (!hasPermission(interaction.member, interaction.channelId)) {
-      return interaction.reply({
-        content: '❌ You do not have permission to use this command in this channel. Please use <#811263527239024640> instead.',
-        flags: MessageFlags.Ephemeral
-      });
-    }
-
     const send = interaction.options.getBoolean('send') ?? false;
     const deferOptions = send ? {} : { flags: MessageFlags.Ephemeral };
     await interaction.deferReply(deferOptions);
@@ -377,32 +322,6 @@ module.exports = {
 
   async executePrefix(message, args) {
     try {
-      const isSupported = isChannelSupported(message.channelId);
-
-      // Only allow command in supported channels
-      if (!isSupported) {
-        try {
-          const msg = await message.reply({
-            content: 'Please use <#811263527239024640> to use this command.'
-          });
-          setTimeout(() => msg.delete().catch(() => {}), 30000);
-        } catch (err) {
-          console.error('Error sending info message:', err);
-        }
-        return;
-      }
-
-      // Role restriction check for support channels
-      if (!hasPermission(message.member, message.channelId)) {
-        try {
-          const msg = await message.reply('❌ You do not have permission to use this command in this channel. Please use <#811263527239024640> instead.');
-          setTimeout(() => msg.delete().catch(() => {}), 15000);
-        } catch (err) {
-          console.error('Error sending permission message:', err);
-        }
-        return;
-      }
-
       let search = null;
       let author = null;
       

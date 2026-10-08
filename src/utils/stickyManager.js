@@ -6,15 +6,14 @@ async function initializeStickyManager() {
   try {
     const rows = await loadStickyMessages();
     for (const row of rows) {
-      const cooldownMs = Number(row.cooldown_ms ?? 120000);
       const includeWarning = (row.include_warning == null) ? true : (Number(row.include_warning) !== 0);
       stickies[row.channel_id] = {
         guildId: row.guild_id,
         content: row.content,
-        cooldownMs: isNaN(cooldownMs) ? 120000 : cooldownMs,
         includeWarning,
         lastMessageId: row.last_message_id || null,
-        lastSentMs: 0
+        reposting: false,
+        pending: false
       };
     }
     console.log(`Loaded ${Object.keys(stickies).length} sticky configs`);
@@ -23,24 +22,23 @@ async function initializeStickyManager() {
   }
 }
 
-async function setSticky(guildId, channel, content, cooldownSeconds = 120, includeWarning = true) {
+async function setSticky(guildId, channel, content, includeWarning = true) {
   const channelId = channel.id;
   try {
-    const cooldownMs = Math.max(0, Math.floor(Number(cooldownSeconds) || 0) * 1000);
-
-    const saved = await saveStickyMessage(guildId, channelId, content, cooldownMs, includeWarning);
+    const saved = await saveStickyMessage(guildId, channelId, content, 0, includeWarning);
     if (!saved) {
       return { ok: false, error: 'DB_WRITE_FAILED: see server logs' };
     }
 
-    stickies[channelId] = {
-      guildId,
-      content,
-      cooldownMs,
-      includeWarning: !!includeWarning,
-      lastMessageId: stickies[channelId]?.lastMessageId || null,
-      lastSentMs: 0
-    };
+    // Update in place so a repost already running for this channel keeps its lock
+    const cfg = stickies[channelId] || (stickies[channelId] = {
+      lastMessageId: null,
+      reposting: false,
+      pending: false
+    });
+    cfg.guildId = guildId;
+    cfg.content = content;
+    cfg.includeWarning = !!includeWarning;
 
     return { ok: true };
   } catch (err) {
@@ -83,15 +81,25 @@ async function handleMessage(message) {
 
   if (message.author.bot) return;
 
-  const now = Date.now();
-  const elapsed = now - (cfg.lastSentMs || 0);
-  if (cfg.cooldownMs != null && elapsed < cfg.cooldownMs) return;
+  // Only one repost per channel at a time; messages arriving mid-repost trigger a single
+  // follow-up repost instead of each deleting the same old sticky and posting duplicates
+  if (cfg.reposting) {
+    cfg.pending = true;
+    return;
+  }
 
+  cfg.reposting = true;
   try {
-    await repostSticky(message.channel);
-    cfg.lastSentMs = now;
-  } catch (err) {
-    console.error('Error handling sticky on message:', err.message || err);
+    do {
+      cfg.pending = false;
+      try {
+        await repostSticky(message.channel);
+      } catch (err) {
+        console.error('Error handling sticky on message:', err.message || err);
+      }
+    } while (cfg.pending && stickies[channelId] === cfg);
+  } finally {
+    cfg.reposting = false;
   }
 }
 
@@ -111,6 +119,12 @@ async function repostSticky(channel) {
   const content = cfg.includeWarning ? `${cfg.content}\n\n*This is an automated stickied message.*` : cfg.content;
 
   const sent = await channel.send({ content, allowedMentions: { parse: [] } });
+
+  // Sticky was removed while this repost was in flight
+  if (stickies[channelId] !== cfg) {
+    await sent.delete().catch(() => {});
+    return;
+  }
 
   cfg.lastMessageId = sent.id;
   try {

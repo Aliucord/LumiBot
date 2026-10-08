@@ -3,6 +3,7 @@ const path = require('path');
 const { getReviewById, deleteReview } = require(path.join(__dirname, '../../utils/db'));
 
 module.exports = {
+  guildOnly: true,
   data: new SlashCommandBuilder()
     .setName('remove-review')
     .setDescription('Remove a review (admins can remove any, users can remove their own)')

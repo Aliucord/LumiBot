@@ -1,16 +1,5 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 
-const SUPPORTED_CHANNELS = [
-  '811261298997460992',
-  '847566769258233926',
-  '811262084968742932',
-  '811263527239024640'
-];
-
-function isChannelSupported(channelId) {
-  return SUPPORTED_CHANNELS.includes(channelId);
-}
-
 const FAKENITRO_MESSAGE = `# FAKENITRO PLUGINS
 **⚠️ READING [THIS GUIDE](<https://yutaplug.github.io/Aliucord/#userpfp-and-bg>) IS NECESSARY IF YOU WANT TO USE USERPFP/BG ⚠️**
 
@@ -18,7 +7,7 @@ const FAKENITRO_MESSAGE = `# FAKENITRO PLUGINS
 [FakeStickers](https://github.com/RhythmLunatic/aliucord-plugins/raw/builds/FakeStickers.zip) for sending stickers as URL.
 [UserPFP](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserPFP.zip) for setting a profile picture to UserPFP database.
 [UserBG](https://github.com/OmegaSunkey/awesomeplugins/raw/builds/UserBG.zip) for setting a banner to UserBG database.
-[FakeDecor](fdsdfdf) for setting an avatar decoration to Decor database.
+[FakeDecor](https://github.com/yutaplug/yutaplugins/raw/builds/FakeDecor.zip) for setting an avatar decoration to Decor database.
 
 -# Hold this message to install them.`;
 
@@ -32,21 +21,6 @@ module.exports = {
         .setRequired(false)),
 
   async execute(interaction) {
-    const isSupported = isChannelSupported(interaction.channelId);
-
-    if (!isSupported) {
-      await interaction.deferReply();
-      try {
-        const msg = await interaction.followUp({
-          content: 'Please use <#811263527239024640> to use this command.'
-        });
-        setTimeout(() => msg.delete().catch(() => {}), 30000);
-      } catch (err) {
-        console.error('Error sending info message:', err);
-      }
-      return;
-    }
-
     const send = interaction.options.getBoolean('send') ?? false;
     const deferOptions = send ? {} : { flags: MessageFlags.Ephemeral };
     await interaction.deferReply(deferOptions);
@@ -55,20 +29,6 @@ module.exports = {
   },
 
   async executePrefix(message, args) {
-    const isSupported = isChannelSupported(message.channelId);
-
-    if (!isSupported) {
-      try {
-        const msg = await message.reply({
-          content: 'Please use <#811263527239024640> to use this command.'
-        });
-        setTimeout(() => msg.delete().catch(() => {}), 30000);
-      } catch (err) {
-        console.error('Error sending info message:', err);
-      }
-      return;
-    }
-
     await message.reply({ content: FAKENITRO_MESSAGE });
   }
 };

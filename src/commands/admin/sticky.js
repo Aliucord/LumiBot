@@ -13,11 +13,6 @@ module.exports = {
           opt.setName('message')
             .setDescription('Message content')
             .setRequired(true))
-        .addIntegerOption(opt =>
-          opt.setName('cooldown')
-            .setDescription('Cooldown in seconds (default 120)')
-            .setMinValue(0)
-            .setRequired(false))
         .addBooleanOption(opt =>
           opt.setName('warning')
             .setDescription("Include 'This is an automated stickied message.' footer (default on)")
@@ -56,11 +51,10 @@ module.exports = {
 
       if (sub === 'add') {
         const message = interaction.options.getString('message');
-        const cooldown = interaction.options.getInteger('cooldown') ?? 120;
         const warning = interaction.options.getBoolean('warning');
-        const res = await setSticky(guildId, channel, message, cooldown, warning == null ? true : warning);
+        const res = await setSticky(guildId, channel, message, warning == null ? true : warning);
         if (!res?.ok) return interaction.editReply({ content: `❌ Failed to set stickied message: ${res?.error || 'unknown error'}` });
-        return interaction.editReply({ content: `✅ Stickied message set in ${channel} (cooldown ${cooldown}s)` });
+        return interaction.editReply({ content: `✅ Stickied message set in ${channel}` });
       }
 
       if (sub === 'remove') {
@@ -89,7 +83,7 @@ module.exports = {
 
     const sub = (args[0] || '').toLowerCase();
     if (!['add', 'remove', 'set', 'disable'].includes(sub)) {
-      return message.reply('❌ Usage: `!sticky add [#channel] | <message> [| cooldown=<seconds>] [| warning=true|false]` | `!sticky remove [#channel]`');
+      return message.reply('❌ Usage: `!sticky add [#channel] | <message> [| warning=true|false]` | `!sticky remove [#channel]`');
     }
 
     let channel = message.channel;
@@ -107,7 +101,7 @@ module.exports = {
     if (sub === 'set' || sub === 'add') {
       const pipeIdx = rest.indexOf('|');
       if (pipeIdx === -1) {
-        return message.reply('❌ Usage: `!sticky add [#channel] | <message> [| cooldown=<seconds>] [| warning=true|false]`');
+        return message.reply('❌ Usage: `!sticky add [#channel] | <message> [| warning=true|false]`');
       }
 
       const maybeChan = rest.slice(0, pipeIdx).trim();
@@ -119,24 +113,20 @@ module.exports = {
 
       const parts = remainder.split('|').map(p => p.trim()).filter(Boolean);
       const stickyText = parts[0];
-      let cooldown = 120;
       let warning = true;
       for (let i = 1; i < parts.length; i++) {
         const [k, vRaw] = parts[i].split('=').map(s => s?.trim());
         if (!k) continue;
         const kL = k.toLowerCase();
-        if (kL === 'cooldown') {
-          const v = parseInt(vRaw, 10);
-          if (!isNaN(v) && v >= 0) cooldown = v;
-        } else if (kL === 'warning') {
+        if (kL === 'warning') {
           const v = (vRaw || '').toLowerCase();
           if (v === 'true' || v === 'false') warning = v === 'true';
         }
       }
 
-      const res = await setSticky(message.guild.id, channel, stickyText, cooldown, warning);
+      const res = await setSticky(message.guild.id, channel, stickyText, warning);
       if (!res?.ok) return message.reply(`❌ Failed to set stickied message: ${res?.error || 'unknown error'}`);
-      return message.reply(`✅ Stickied message set in ${channel} (cooldown ${cooldown}s)`);
+      return message.reply(`✅ Stickied message set in ${channel}`);
     }
 
     if (sub === 'disable' || sub === 'remove') {

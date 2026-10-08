@@ -1,7 +1,23 @@
 const fs = require('fs');
 const path = require('path');
-const { Collection } = require('discord.js');
+const { Collection, ApplicationIntegrationType, InteractionContextType } = require('discord.js');
 
+// Commands in these folders rely on guild members/permissions, so they stay server-only
+const GUILD_ONLY_DIRS = ['admin', 'moderation'];
+
+function applyContexts(command, dir) {
+  const guildOnly = command.guildOnly || GUILD_ONLY_DIRS.includes(path.basename(dir));
+  if (guildOnly) {
+    command.data
+      .setIntegrationTypes(ApplicationIntegrationType.GuildInstall)
+      .setContexts(InteractionContextType.Guild);
+  } else {
+    // Usable in any server, the bot's DMs and group DMs, and as a user-installed app
+    command.data
+      .setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)
+      .setContexts(InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel);
+  }
+}
 
 function loadCommands(client) {
   client.commands = new Collection();
@@ -18,6 +34,7 @@ function loadCommands(client) {
       } else if (entry.isFile() && entry.name.endsWith('.js')) {
         const command = require(entryPath);
         if ('data' in command && 'execute' in command) {
+          applyContexts(command, dir);
           client.commands.set(command.data.name, command);
           if (typeof command.data.toJSON === 'function') {
             commands.push(command.data.toJSON());

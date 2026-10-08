@@ -13,7 +13,7 @@ module.exports = {
       .addFields(
         {
           name: '📚 Plugin Commands',
-          value: '`/plugins [search]` - Browse all Aliucord plugins\n`/random-plugin` - Get a random plugin suggestion',
+          value: '`/beginner` - How to install Aliucord, plugins and themes\n`/plugins [search]` - Browse all Aliucord plugins\n`/backports [search]` - Plugins that bring features from new Discord\n`/random-plugin` - Get a random plugin suggestion',
           inline: false
         },
         {
@@ -33,7 +33,7 @@ module.exports = {
         },
         {
           name: '💡 Tips',
-          value: '• Use `/plugins` in <#811263527239024640> to unlock "hold to install" feature',
+          value: '• Hold a `/plugins` or `/backports` message (not the links) to install the plugins in it',
           inline: false
         }
       );
@@ -49,7 +49,7 @@ module.exports = {
       .addFields(
         {
           name: '📚 Plugin Commands',
-          value: '`/plugins [search]` - Browse all Aliucord plugins\n`/random-plugin` - Get a random plugin suggestion',
+          value: '`/beginner` - How to install Aliucord, plugins and themes\n`/plugins [search]` - Browse all Aliucord plugins\n`/backports [search]` - Plugins that bring features from new Discord\n`/random-plugin` - Get a random plugin suggestion',
           inline: false
         },
         {
@@ -69,7 +69,7 @@ module.exports = {
         },
         {
           name: '💡 Tips',
-          value: '• Use `/plugins` in <#811263527239024640> to unlock "hold to install" feature',
+          value: '• Hold a `/plugins` or `/backports` message (not the links) to install the plugins in it',
           inline: false
         }
       );

@@ -5,6 +5,7 @@ const { parseInterval, sendMinkyToChannel, formatInterval } = require(path.join(
 const { findChannel } = require(path.join(__dirname, '../../utils/prefixParser'));
 
 module.exports = {
+  guildOnly: true,
   data: new SlashCommandBuilder()
     .setName('minkyinterval')
     .setDescription('Schedule automatic Minky images at a set interval')

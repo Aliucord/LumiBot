@@ -100,7 +100,7 @@ async function initializeDatabase() {
 async function loadStickyMessages() {
   try {
     const result = await client.execute({
-      sql: 'SELECT guild_id, channel_id, message_content as content, last_message_id, cooldown_ms, include_warning FROM sticky_messages',
+      sql: "SELECT guild_id, channel_id, COALESCE(NULLIF(message_content, ''), content) as content, last_message_id, cooldown_ms, include_warning FROM sticky_messages",
       args: []
     });
     return result.rows;
@@ -325,9 +325,10 @@ async function getTopReviewedPlugins(limit = 5) {
 
 async function saveStickyMessage(guildId, channelId, content, cooldownMs = 0, includeWarning = false) {
   try {
+    // Older databases use message_content, newer ones were created with a NOT NULL content column; fill both
     await client.execute({
-      sql: 'INSERT OR REPLACE INTO sticky_messages (guild_id, channel_id, message_content, cooldown_ms, include_warning) VALUES (?, ?, ?, ?, ?)',
-      args: [guildId, channelId, content, cooldownMs, includeWarning ? 1 : 0]
+      sql: 'INSERT OR REPLACE INTO sticky_messages (guild_id, channel_id, message_content, content, cooldown_ms, include_warning) VALUES (?, ?, ?, ?, ?, ?)',
+      args: [guildId, channelId, content, content, cooldownMs, includeWarning ? 1 : 0]
     });
     return true;
   } catch (err) {

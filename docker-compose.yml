@@ -2,8 +2,11 @@ version: '3.8'
 
 services:
   lumibot:
-    image: ghcr.io/nyxiereal/lumibot:latest
+    image: ghcr.io/aliucord/lumibot:main
     container_name: lumibot
     restart: unless-stopped
     environment:
       - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
+      - DISCORD_OWNER_ID=${DISCORD_OWNER_ID}
+      - TURSO_CONNECTION_URL=${TURSO_CONNECTION_URL}
+      - TURSO_AUTH_TOKEN=${TURSO_AUTH_TOKEN}

@@ -2,7 +2,7 @@ const { SlashCommandBuilder, MessageFlags, ActionRowBuilder, ButtonBuilder, Butt
 
 // The Backports section of the Aliucord docs (https://yutaplug.github.io/Aliucord/#backports)
 const DOCS_URL = 'https://raw.githubusercontent.com/yutaplug/Aliucord/main/index.md';
-const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours
+const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
 
 const MESSAGE_LIMIT = 2000;
 const LEGEND = '-# 🚧 beta · ⚠️ maintenance · 💣 broken';

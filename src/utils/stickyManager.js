@@ -6,11 +6,9 @@ async function initializeStickyManager() {
   try {
     const rows = await loadStickyMessages();
     for (const row of rows) {
-      const includeWarning = (row.include_warning == null) ? true : (Number(row.include_warning) !== 0);
       stickies[row.channel_id] = {
         guildId: row.guild_id,
         content: row.content,
-        includeWarning,
         lastMessageId: row.last_message_id || null,
         reposting: false,
         pending: false
@@ -22,10 +20,10 @@ async function initializeStickyManager() {
   }
 }
 
-async function setSticky(guildId, channel, content, includeWarning = true) {
+async function setSticky(guildId, channel, content) {
   const channelId = channel.id;
   try {
-    const saved = await saveStickyMessage(guildId, channelId, content, 0, includeWarning);
+    const saved = await saveStickyMessage(guildId, channelId, content, 0);
     if (!saved) {
       return { ok: false, error: 'DB_WRITE_FAILED: see server logs' };
     }
@@ -38,7 +36,6 @@ async function setSticky(guildId, channel, content, includeWarning = true) {
     });
     cfg.guildId = guildId;
     cfg.content = content;
-    cfg.includeWarning = !!includeWarning;
 
     return { ok: true };
   } catch (err) {
@@ -116,9 +113,7 @@ async function repostSticky(channel) {
     }
   }
 
-  const content = cfg.includeWarning ? `${cfg.content}\n\n*This is an automated stickied message.*` : cfg.content;
-
-  const sent = await channel.send({ content, allowedMentions: { parse: [] } });
+  const sent = await channel.send({ content: cfg.content, allowedMentions: { parse: [] } });
 
   // Sticky was removed while this repost was in flight
   if (stickies[channelId] !== cfg) {

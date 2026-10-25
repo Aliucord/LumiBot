@@ -100,15 +100,15 @@ module.exports = {
     const statusMessage = args.slice(2).join(' ');
 
     if (!status || !validStatuses.includes(status)) {
-      return message.reply('❌ Usage: `l!setstatus <online|idle|dnd> <playing|streaming|listening|watching|competing> <message>`\nExample: `l!setstatus online listening Spotify`');
+      return message.reply('❌ Usage: `!setstatus <online|idle|dnd> <playing|streaming|listening|watching|competing> <message>`\nExample: `!setstatus online listening Spotify`');
     }
 
     if (!activity || !validActivities.includes(activity)) {
-      return message.reply('❌ Please provide a valid activity type: playing, streaming, listening, watching, competing\nExample: `l!setstatus online listening Spotify`');
+      return message.reply('❌ Please provide a valid activity type: playing, streaming, listening, watching, competing\nExample: `!setstatus online listening Spotify`');
     }
 
     if (!statusMessage) {
-      return message.reply('❌ Please provide a status message.\nExample: `l!setstatus online listening Spotify`');
+      return message.reply('❌ Please provide a status message.\nExample: `!setstatus online listening Spotify`');
     }
 
     try {

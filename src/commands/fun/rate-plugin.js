@@ -75,7 +75,7 @@ module.exports = {
   async executePrefix(message, args, rawArgs) {
     const parts = rawArgs.split(' ');
     if (parts.length < 2) {
-      return message.reply('❌ Usage: `l!rate-plugin <plugin-name> <rating> [review]`\nExample: `l!rate-plugin Themer 5 Great plugin!`');
+      return message.reply('❌ Usage: `!rate-plugin <plugin-name> <rating> [review]`\nExample: `!rate-plugin Themer 5 Great plugin!`');
     }
 
     const pluginName = parts[0];

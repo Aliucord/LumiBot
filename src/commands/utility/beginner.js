@@ -9,7 +9,7 @@ Download the latest [Aliucord Manager](<https://github.com/Aliucord/Manager/rele
 1. In <#811275162715553823> or <#845784407846813696>, hold any message
 2. Tap \`View [Author]'s Plugins\` (<#811275162715553823>) or \`Install [Plugin name]\` (<#845784407846813696>)
 3. Install the plugin you want, then restart Aliucord (most plugins need it)
--# Search plugins with \`!plugins <name>\` in #bot-spam, or use the PluginWeb plugin for a built-in list
+-# Search plugins with \`/search plugin <name>\` in <#811263527239024640>, or use the PluginWeb plugin for a built-in list
 
 **Installing manually** (needed for #unmaintained-plugins, or if you already have the \`.zip\`)
 1. Open the plugin's repo, switch to the \`builds\` branch and download \`[PluginName].zip\`

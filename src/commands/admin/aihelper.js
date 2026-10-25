@@ -34,7 +34,7 @@ const FAQ_LIST = [
   { keywords: ["password bar"], answer: "Device or keyboard issue. no fix on our end." },
   { keywords: ["modern ui", "modern interface"], answer: "This is not really possible due to Aliucord using an old Discord version. However, you can install 'DiscordRN Dark' theme from #themes channel or use Kettu/Rain clients." },
   { keywords: ["install aliucord", "install plugins", "install themes"], answer: "<https://yutaplug.github.io/Aliucord/#beginner-guide>" },
-  { keywords: ["is there", "plugin"], answer: "Search for it using the !plugins command in #bot-spam, PluginWeb plugin or using the built-in Discord searchbar. If you can't find it, stand by until a supporter can assist you." },
+  { keywords: ["is there", "plugin"], answer: "Search for it using the /search plugin command in <#811263527239024640>, PluginWeb plugin or using the built-in Discord searchbar. If you can't find it, stand by until a supporter can assist you." },
   { keywords: ["nitro"], answer: "Real nitro is not possible, but you can get plugins that mimic a few nitro features (use the !fakenitro command)." },
   { keywords: ["changelog"], answer: "<https://yutaplug.github.io/Aliucord/#changelog>" },
   { keywords: ["bypass file size"], answer: "Best you can do is uploading the file to <https://catbox.moe> or a similar service." },

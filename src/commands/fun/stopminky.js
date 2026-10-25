@@ -46,7 +46,7 @@ module.exports = {
     }
 
     if (args.length < 1) {
-      return message.reply('❌ Usage: `l!stopminky <#channel>`\nExample: `l!stopminky #general`');
+      return message.reply('❌ Usage: `!stopminky <#channel>`\nExample: `!stopminky #general`');
     }
 
     const channel = findChannel(message.guild, args[0]);

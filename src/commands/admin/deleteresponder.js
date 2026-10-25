@@ -51,7 +51,7 @@ module.exports = {
     const trigger = rawArgs.trim().toLowerCase();
     
     if (!trigger) {
-      return message.reply('❌ Usage: `l!deleteresponder <trigger>`\nExample: `l!deleteresponder hello`');
+      return message.reply('❌ Usage: `!deleteresponder <trigger>`\nExample: `!deleteresponder hello`');
     }
 
     const guildId = message.guild.id;

@@ -162,7 +162,7 @@ module.exports = {
             inline: true
           }
         )
-        .setFooter({ text: 'Use l!plugins to browse | l!rate-plugin to review' });
+        .setFooter({ text: 'Use /search plugin to browse | /rate-plugin to review' });
 
       await message.reply({ embeds: [embed] });
     } catch (err) {

@@ -60,7 +60,7 @@ module.exports = {
 
   async executePrefix(message, args) {
     if (args.length < 1) {
-      return message.reply('❌ Usage: `l!remove-review <review-id>`\nExample: `l!remove-review 42`');
+      return message.reply('❌ Usage: `!remove-review <review-id>`\nExample: `!remove-review 42`');
     }
 
     const reviewId = parseInt(args[0]);

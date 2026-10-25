@@ -73,7 +73,7 @@ module.exports = {
     }
 
     if (args.length < 2) {
-      return message.reply('❌ Usage: `l!minkyinterval <interval> <#channel>`\nExample: `l!minkyinterval 1h #general`');
+      return message.reply('❌ Usage: `!minkyinterval <interval> <#channel>`\nExample: `!minkyinterval 1h #general`');
     }
 
     const intervalStr = args[0];

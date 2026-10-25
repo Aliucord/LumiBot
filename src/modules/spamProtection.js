@@ -12,7 +12,7 @@ function isMedia(message) {
 
 module.exports = {
   checkSpam(message) {
-    return;
+    return false;
     if (!message.guild || message.author.bot) return false;
     const now = Date.now();
     const key = `${message.guild.id}:${message.author.id}`;

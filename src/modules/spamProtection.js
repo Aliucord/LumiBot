@@ -12,6 +12,7 @@ function isMedia(message) {
 
 module.exports = {
   checkSpam(message) {
+    return;
     if (!message.guild || message.author.bot) return false;
     const now = Date.now();
     const key = `${message.guild.id}:${message.author.id}`;
@@ -42,6 +43,7 @@ module.exports = {
     return false;
   },
   async handleSpam(message, type) {
+    return;
     const member = message.guild.members.cache.get(message.author.id);
     if (!member) return;
     let punishment = 'Softban';

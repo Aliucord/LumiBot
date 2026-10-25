@@ -1,7 +1,7 @@
 const userMessageMap = new Map();
 const userMediaMap = new Map();
 
-const TIME_WINDOW = 7000;
+const TIME_WINDOW = 4000;
 const MESSAGE_LIMIT = 5; 
 const CHANNEL_LIMIT = 3; 
 const INVITE_REGEX = /discord(?:\.gg|\.com\/invite)\/(?!uwucord|EsNDvBaHVU|D9uwnFnqmd|n9QQ4XhhJP|0Tmfo5ZbORCRqbAd|sbA3xCJ|rMdz)[a-z0-9-_]+/i;
@@ -52,7 +52,7 @@ module.exports = {
         punishment = 'Mute';
         await member.timeout?.(60 * 60 * 1000, 'Anti-spam/anti-scam mute'); // 1 hour mute fallback
       } else {
-        await member.ban({ reason: 'Anti-spam/anti-scam softban', deleteMessageSeconds: 7 * 24 * 60 * 60 }); // delete up to 7 days
+        await member.ban({ reason: 'Anti-spam/anti-scam softban', deleteMessageSeconds: 5 * 60 }); // delete up to 5 minutes
         await message.guild.members.unban(member.id, 'Softban unban');
       }
       actionSuccess = true;

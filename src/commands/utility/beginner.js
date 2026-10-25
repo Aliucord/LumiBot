@@ -6,8 +6,8 @@ const BEGINNER_MESSAGE = `# Aliucord Beginner Guide
 Download the latest [Aliucord Manager](<https://github.com/Aliucord/Manager/releases/latest>) APK and install it. Open it, grant all permissions, press **New install** and follow the steps.
 
 ## Installing plugins
-1. In #plugins-list or #new-plugins, hold any message
-2. Tap \`View [Author]'s Plugins\` (#plugins-list) or \`Install [Plugin name]\` (#new-plugins)
+1. In <#811275162715553823> or <#845784407846813696>, hold any message
+2. Tap \`View [Author]'s Plugins\` (<#811275162715553823>) or \`Install [Plugin name]\` (<#845784407846813696>)
 3. Install the plugin you want, then restart Aliucord (most plugins need it)
 -# Search plugins with \`!plugins <name>\` in #bot-spam, or use the PluginWeb plugin for a built-in list
 
@@ -20,7 +20,7 @@ Download the latest [Aliucord Manager](<https://github.com/Aliucord/Manager/rele
 1. Install the \`Themer\` plugin
 2. In #themes, hold any message (**not the link**) and tap \`Install [Theme name]\`
 3. Enable the theme in Themer settings
--# Theme not working? Check the transparency mode, use the theme mirror from #theme-support pins for image backgrounds, or Themer may be broken on your Android version.`;
+-# Theme not working? Check the transparency mode, use the theme mirror from <#875213883776847873> pins for image backgrounds, or Themer may be broken on your Android version.`;
 
 module.exports = {
   data: new SlashCommandBuilder()

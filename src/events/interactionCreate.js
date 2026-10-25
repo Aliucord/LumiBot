@@ -226,49 +226,4 @@ async function handleButton(interaction) {
     }
     return;
   }
-
-  if (interaction.customId === 'install_android') {
-    const isAliucord = interaction.guildId === '811255666990907402';
-    
-    if (isAliucord) {
-      await interaction.reply({
-        embeds: [{
-          title: 'Aliucord Installation',
-          description: '**Download the Manager:**\n\n' +
-            '[Aliucord Manager](https://github.com/Aliucord/Manager/releases/latest)\n\n' +
-            '*Use the manager to install and manage Aliucord*',
-          color: 0x3DDC84
-        }],
-        flags: MessageFlags.Ephemeral
-      });
-    } else {
-      await interaction.reply({
-        embeds: [{
-          title: 'Android Installation',
-          description: '**Choose your method:**\n\n' +
-            '**Root with Xposed** → [KettuXposed](https://github.com/C0C0B01/KettuXposed/releases/latest)\n\n' +
-            '**Non-root** → [KettuManager](https://github.com/C0C0B01/KettuManager/releases/latest)\n\n' +
-            '*If you don\'t know what root is, go with KettuManager*',
-          color: 0x3DDC84
-        }],
-        flags: MessageFlags.Ephemeral
-      });
-    }
-    return;
-  }
-
-  if (interaction.customId === 'install_ios') {
-    await interaction.reply({
-      embeds: [{
-        title: 'iOS Installation',
-        description: '**Choose your method:**\n\n' +
-          '**Jailbroken** → [KettuTweak](https://github.com/C0C0B01/KettuTweak)\n\n' +
-          '**Jailed** → [BTLoader](https://github.com/CloudySn0w/BTLoader)\n\n' +
-          '*If you don\'t know what jailbreak is, go with BTLoader*',
-        color: 0x007AFF
-      }],
-      flags: MessageFlags.Ephemeral
-    });
-    return;
-  }
 }

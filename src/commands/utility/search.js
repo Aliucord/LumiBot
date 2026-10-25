@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, MessageFlags, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const path = require('path');
-const { SEARCH_CHANNELS } = require(path.join(__dirname, '../../utils/serverConfig'));
+const { SUPPORT_HELPER_ROLE, SEARCH_CHANNELS, PUBLIC_SEARCH_CHANNELS } = require(path.join(__dirname, '../../utils/serverConfig'));
 const { fetchPlugins, filterPlugins, formatPluginLine, getUniquePluginAuthors } = require(path.join(__dirname, '../../utils/plugins'));
 const { fetchThemes, filterThemes, formatThemeLine, getUniqueThemeAuthors } = require(path.join(__dirname, '../../utils/themes'));
 
@@ -30,16 +30,33 @@ function parseType(str) {
   return null;
 }
 
-// Returns null if allowed, otherwise the redirect message
-function checkChannel(channelId, type) {
-  const allowed = SEARCH_CHANNELS[type];
-  if (allowed.includes(channelId)) return null;
+function isSupportHelper(member) {
+  const roles = member?.roles;
+  if (!roles) return false;
+  return roles.cache ? roles.cache.has(SUPPORT_HELPER_ROLE) : roles.includes(SUPPORT_HELPER_ROLE);
+}
 
-  const mentions = allowed.map(id => `<#${id}>`);
-  const list = mentions.length > 1
+function channelList(ids) {
+  const mentions = ids.map(id => `<#${id}>`);
+  return mentions.length > 1
     ? `${mentions.slice(0, -1).join(', ')} or ${mentions[mentions.length - 1]}`
     : mentions[0];
-  return `${TYPES[type].label} can only be searched in ${list}, since that's where hold to install works.`;
+}
+
+// Returns null if allowed, otherwise the redirect message
+function checkChannel(channelId, type, member) {
+  const helper = isSupportHelper(member);
+  const allowed = helper ? SEARCH_CHANNELS[type] : PUBLIC_SEARCH_CHANNELS[type];
+  if (allowed.includes(channelId)) return null;
+
+  const label = TYPES[type].label;
+  if (!helper && SEARCH_CHANNELS[type].includes(channelId) && allowed.length === 0) {
+    return `Only users with the support helper role can search ${label.toLowerCase()}.`;
+  }
+  if (allowed.length === 0) {
+    return `${label} can only be searched by support helpers in ${channelList(SEARCH_CHANNELS[type])}.`;
+  }
+  return `${label} can only be searched in ${channelList(allowed)}, since that's where hold to install works.`;
 }
 
 function encodeFilter(str) {
@@ -147,7 +164,7 @@ module.exports = {
   async execute(interaction) {
     const type = interaction.options.getString('type');
 
-    const redirect = checkChannel(interaction.channelId, type);
+    const redirect = checkChannel(interaction.channelId, type, interaction.member);
     if (redirect) {
       return interaction.reply({ content: redirect, flags: MessageFlags.Ephemeral });
     }
@@ -173,7 +190,7 @@ module.exports = {
       }
       args = args.slice(1);
 
-      const redirect = checkChannel(message.channelId, type);
+      const redirect = checkChannel(message.channelId, type, message.member);
       if (redirect) {
         const msg = await message.reply(redirect);
         setTimeout(() => msg.delete().catch(() => {}), 15000);

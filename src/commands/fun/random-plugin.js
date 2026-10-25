@@ -1,13 +1,13 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const path = require('path');
-const { fetchPlugins } = require(path.join(__dirname, '../utility/plugins'));
+const { fetchPlugins } = require(path.join(__dirname, '../../utils/plugins'));
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('random-plugin')
     .setDescription('Fetches a random plugin'),
   async execute(interaction) {
-    const plugins = await fetchPlugins(interaction.guildId);
+    const plugins = await fetchPlugins();
     const random = plugins[Math.floor(Math.random() * plugins.length)];
     if (random) {
       await interaction.reply({ content: `Random plugin: ${random.name} - ${random.url}` });

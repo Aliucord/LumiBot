@@ -13,12 +13,12 @@ module.exports = {
       .addFields(
         {
           name: '📚 Plugin Commands',
-          value: '`/beginner` - How to install Aliucord, plugins and themes\n`/plugins [search]` - Browse all Aliucord plugins\n`/backports [search]` - Plugins that bring features from new Discord\n`/random-plugin` - Get a random plugin suggestion',
+          value: '`/beginner` - How to install Aliucord, plugins and themes\n`/search plugin [query]` - Search Aliucord plugins\n`/backports [search]` - Plugins that bring features from new Discord\n`/random-plugin` - Get a random plugin suggestion',
           inline: false
         },
         {
           name: '🎨 Theme Commands',
-          value: '`/themes [search]` - Browse all Aliucord themes',
+          value: '`/search theme [query]` - Search Aliucord themes (in <#875213883776847873>)',
           inline: false
         },
         {
@@ -28,12 +28,12 @@ module.exports = {
         },
         {
           name: '📌 Prefix Commands',
-          value: 'Use `!` prefix for text-based versions of slash commands\n(e.g., `!plugins`, `!minky`, `!help`)',
+          value: 'Use `!` prefix for text-based versions of slash commands\n(e.g., `!search plugin`, `!minky`, `!help`)',
           inline: false
         },
         {
           name: '💡 Tips',
-          value: '• Hold a `/plugins` or `/backports` message (not the links) to install the plugins in it',
+          value: '• Hold a `/search` or `/backports` message (not the links) to install the plugins in it',
           inline: false
         }
       );
@@ -49,12 +49,12 @@ module.exports = {
       .addFields(
         {
           name: '📚 Plugin Commands',
-          value: '`/beginner` - How to install Aliucord, plugins and themes\n`/plugins [search]` - Browse all Aliucord plugins\n`/backports [search]` - Plugins that bring features from new Discord\n`/random-plugin` - Get a random plugin suggestion',
+          value: '`/beginner` - How to install Aliucord, plugins and themes\n`/search plugin [query]` - Search Aliucord plugins\n`/backports [search]` - Plugins that bring features from new Discord\n`/random-plugin` - Get a random plugin suggestion',
           inline: false
         },
         {
           name: '🎨 Theme Commands',
-          value: '`/themes [search]` - Browse all Aliucord themes',
+          value: '`/search theme [query]` - Search Aliucord themes (in <#875213883776847873>)',
           inline: false
         },
         {
@@ -64,12 +64,12 @@ module.exports = {
         },
         {
           name: '📌 Prefix Commands',
-          value: 'Use `!` prefix for text-based versions of slash commands\n(e.g., `!plugins`, `!minky`, `!help`)',
+          value: 'Use `!` prefix for text-based versions of slash commands\n(e.g., `!search plugin`, `!minky`, `!help`)',
           inline: false
         },
         {
           name: '💡 Tips',
-          value: '• Hold a `/plugins` or `/backports` message (not the links) to install the plugins in it',
+          value: '• Hold a `/search` or `/backports` message (not the links) to install the plugins in it',
           inline: false
         }
       );

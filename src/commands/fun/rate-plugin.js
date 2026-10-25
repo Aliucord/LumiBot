@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const path = require('path');
 const { savePluginReview, getPluginAverageRating } = require(path.join(__dirname, '../../utils/db'));
-const { fetchPlugins } = require(path.join(__dirname, '../utility/plugins'));
+const { fetchPlugins } = require(path.join(__dirname, '../../utils/plugins'));
 
 function formatStars(rating) {
   return '★'.repeat(rating) + '☆'.repeat(5 - rating);

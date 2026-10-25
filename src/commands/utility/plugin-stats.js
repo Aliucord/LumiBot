@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const path = require('path');
-const { fetchPlugins } = require('./plugins');
+const { fetchPlugins } = require('../../utils/plugins');
 const { getTopReviewedPlugins } = require(path.join(__dirname, '../../utils/db'));
 
 function formatStars(rating) {
@@ -84,7 +84,7 @@ module.exports = {
             inline: true
           }
         )
-        .setFooter({ text: 'Use /plugins to browse all plugins | /rate-plugin to review' });
+        .setFooter({ text: 'Use /search to browse all plugins | /rate-plugin to review' });
 
       await interaction.editReply({ embeds: [embed] });
     } catch (err) {

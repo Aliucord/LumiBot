@@ -2,7 +2,8 @@ const { REST, Routes, ActivityType } = require('discord.js');
 const { loadAutoresponders, loadMinkyIntervalsFromDb, minkyIntervals, loadBotStatus } = require('../utils/db');
 const { sendMinkyToChannel } = require('../utils/helpers');
 const path = require('path');
-const pluginsCommand = require(path.join(__dirname, '../commands/utility/plugins'));
+const { clearPluginCache, initializePluginCache } = require(path.join(__dirname, '../utils/plugins'));
+const { clearThemeCache, initializeThemeCache } = require(path.join(__dirname, '../utils/themes'));
 
 const activityTypes = {
   playing: ActivityType.Playing,

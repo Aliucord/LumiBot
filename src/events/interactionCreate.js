@@ -50,101 +50,20 @@ module.exports = {
 };
 
 async function handleButton(interaction) {
-  if (interaction.customId.startsWith('plugins_copy_')) {
-    const pluginsCommand = interaction.client.commands.get('plugins');
-    if (pluginsCommand && pluginsCommand.handleCopyButton) {
-      const parts = interaction.customId.split('_');
-      const page = parseInt(parts[2]) || 0;
-      const index = parseInt(parts[3]) || 0;
-      
+  if (interaction.customId.startsWith('search_')) {
+    const searchCommand = interaction.client.commands.get('search');
+    if (searchCommand && searchCommand.handleButton) {
       try {
-        await pluginsCommand.handleCopyButton(interaction, page, index);
+        await searchCommand.handleButton(interaction);
       } catch (error) {
-        console.error('Error handling plugins copy button:', error);
+        console.error('Error handling search button:', error);
         try {
           await interaction.reply({
-            content: '❌ Error copying link. Please try again.',
+            content: '❌ Error loading results. Please try again.',
             flags: MessageFlags.Ephemeral
           });
-        } catch (updateError) {
-          console.error('Could not reply to button interaction:', updateError);
-        }
-      }
-    }
-    return;
-  }
-
-  if (interaction.customId.startsWith('plugins_')) {
-    const pluginsCommand = interaction.client.commands.get('plugins');
-    if (pluginsCommand && pluginsCommand.handleButton) {
-      const parts = interaction.customId.split('_');
-      const action = parts[1]; // 'prev' or 'next'
-      const page = parts[2] || '0';
-      const encodedSearch = parts[3] || '';
-      const encodedAuthor = parts[4] || '';
-      
-      try {
-        await pluginsCommand.handleButton(interaction, action, page, encodedSearch, encodedAuthor);
-      } catch (error) {
-        console.error('Error handling plugins button:', error);
-        try {
-          await interaction.update({
-            content: '❌ Error loading plugins. Please try again.',
-            components: []
-          });
-        } catch (updateError) {
-          // Interaction already acknowledged
-          console.error('Could not update button interaction:', updateError);
-        }
-      }
-    }
-    return;
-  }
-
-  if (interaction.customId.startsWith('themes_copy_')) {
-    const themesCommand = interaction.client.commands.get('themes');
-    if (themesCommand && themesCommand.handleCopyButton) {
-      const parts = interaction.customId.split('_');
-      const page = parseInt(parts[2]) || 0;
-      const index = parseInt(parts[3]) || 0;
-      
-      try {
-        await themesCommand.handleCopyButton(interaction, page, index);
-      } catch (error) {
-        console.error('Error handling themes copy button:', error);
-        try {
-          await interaction.reply({
-            content: '❌ Error copying link. Please try again.',
-            flags: MessageFlags.Ephemeral
-          });
-        } catch (updateError) {
-          console.error('Could not reply to button interaction:', updateError);
-        }
-      }
-    }
-    return;
-  }
-
-  if (interaction.customId.startsWith('themes_')) {
-    const themesCommand = interaction.client.commands.get('themes');
-    if (themesCommand && themesCommand.handleButton) {
-      const parts = interaction.customId.split('_');
-      const action = parts[1]; // 'prev' or 'next'
-      const page = parts[2] || '0';
-      const encodedSearch = parts[3] || '';
-      const encodedAuthor = parts[4] || '';
-      
-      try {
-        await themesCommand.handleButton(interaction, action, page, encodedSearch, encodedAuthor);
-      } catch (error) {
-        console.error('Error handling themes button:', error);
-        try {
-          await interaction.update({
-            content: '❌ Error loading themes. Please try again.',
-            components: []
-          });
-        } catch (updateError) {
-          console.error('Could not update button interaction:', updateError);
+        } catch (replyError) {
+          console.error('Could not reply to button interaction:', replyError);
         }
       }
     }

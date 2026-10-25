@@ -2,7 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('help')
+    .setName('ahelp')
     .setDescription('View all available bot commands'),
   
   async execute(interaction) {
@@ -28,7 +28,7 @@ module.exports = {
         },
         {
           name: '📌 Prefix Commands',
-          value: 'Use `!` prefix for text-based versions of slash commands\n(e.g., `!search plugin`, `!minky`, `!help`)',
+          value: 'Use `!` prefix for text-based versions of slash commands\n(e.g., `!search plugin`, `!minky`, `!ahelp`)',
           inline: false
         },
         {
@@ -64,7 +64,7 @@ module.exports = {
         },
         {
           name: '📌 Prefix Commands',
-          value: 'Use `!` prefix for text-based versions of slash commands\n(e.g., `!search plugin`, `!minky`, `!help`)',
+          value: 'Use `!` prefix for text-based versions of slash commands\n(e.g., `!search plugin`, `!minky`, `!ahelp`)',
           inline: false
         },
         {

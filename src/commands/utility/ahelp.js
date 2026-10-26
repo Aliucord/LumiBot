@@ -18,7 +18,7 @@ module.exports = {
         },
         {
           name: '🎨 Theme Commands',
-          value: '`/search theme [query]` - Search Aliucord themes (support helpers only, in <#875213883776847873>)',
+          value: '`/search theme [query]` - Search Aliucord themes (in <#875213883776847873>)',
           inline: false
         },
         {
@@ -54,7 +54,7 @@ module.exports = {
         },
         {
           name: '🎨 Theme Commands',
-          value: '`/search theme [query]` - Search Aliucord themes (support helpers only, in <#875213883776847873>)',
+          value: '`/search theme [query]` - Search Aliucord themes (in <#875213883776847873>)',
           inline: false
         },
         {

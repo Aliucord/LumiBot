@@ -13,7 +13,7 @@ const SEARCH_CHANNELS = {
 };
 const PUBLIC_SEARCH_CHANNELS = {
   plugin: ['811263527239024640'],
-  theme: [] // support helpers only
+  theme: ['875213883776847873'] // #theme-support
 };
 
 module.exports = {

@@ -45,18 +45,18 @@ function channelList(ids) {
 
 // Returns null if allowed, otherwise the redirect message
 function checkChannel(channelId, type, member) {
-  const helper = isSupportHelper(member);
-  const allowed = helper ? SEARCH_CHANNELS[type] : PUBLIC_SEARCH_CHANNELS[type];
-  if (allowed.includes(channelId)) return null;
+    if (isSupportHelper(member)) return null;
+    const allowed = PUBLIC_SEARCH_CHANNELS[type];
+    if (allowed.includes(channelId)) return null;
 
-  const label = TYPES[type].label;
-  if (!helper && SEARCH_CHANNELS[type].includes(channelId) && allowed.length === 0) {
-    return `Only users with the support helper role can search ${label.toLowerCase()}.`;
-  }
-  if (allowed.length === 0) {
-    return `${label} can only be searched by support helpers in ${channelList(SEARCH_CHANNELS[type])}.`;
-  }
-  return `${label} can only be searched in ${channelList(allowed)}, since that's where hold to install works.`;
+    const label = TYPES[type].label;
+    if (SEARCH_CHANNELS[type].includes(channelId) && allowed.length === 0) {
+        return `Only users with the support helper role can search ${label.toLowerCase()}.`;
+    }
+    if (allowed.length === 0) {
+        return `${label} can only be searched by support helpers in ${channelList(SEARCH_CHANNELS[type])}.`;
+    }
+    return `${label} can only be searched in ${channelList(allowed)}, since that's where hold to install works.`;
 }
 
 function encodeFilter(str) {

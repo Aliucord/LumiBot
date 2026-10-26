@@ -12,19 +12,6 @@ module.exports = {
 
     if (message.author.bot) return;
 
-
-    // Spam and scam protection: check and handle before anything else
-    const spamType = spamProtection.checkSpam(message);
-    if (spamType) {
-      await spamProtection.handleSpam(message, spamType);
-      return;
-    }
-
-    if (!message.guild) {
-      await sendMinkyToChannel(message.channel);
-      return;
-    }
-
     await handleStickyMessage(message);
 
     const parsed = parseMessage(message);
@@ -37,17 +24,6 @@ module.exports = {
           console.error(`Error executing prefix command ${parsed.commandName}:`, error);
           await message.reply('❌ There was an error executing this command.');
         }
-        return;
-      }
-    }
-
-    // Helper AI: respond to any message in any helper channel
-    const aihelper = message.client.commands.get('aihelper');
-    const helperChannels = aihelper && aihelper.getHelperChannels && aihelper.getHelperChannels(message.guild.id);
-    if (aihelper && aihelper.executePrefix && helperChannels && helperChannels.size && helperChannels.has(message.channel.id)) {
-      // Only respond if not a command (avoid double response)
-      if (!parsed) {
-        await aihelper.executePrefix(message, []);
         return;
       }
     }

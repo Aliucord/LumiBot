@@ -1,6 +1,5 @@
 const { REST, Routes, ActivityType } = require('discord.js');
-const { loadAutoresponders, loadMinkyIntervalsFromDb, minkyIntervals, loadBotStatus } = require('../utils/db');
-const { sendMinkyToChannel } = require('../utils/helpers');
+const { loadAutoresponders } = require('../utils/db');
 const path = require('path');
 const { clearPluginCache, initializePluginCache } = require(path.join(__dirname, '../utils/plugins'));
 const { clearThemeCache, initializeThemeCache } = require(path.join(__dirname, '../utils/themes'));
@@ -41,34 +40,5 @@ module.exports = {
 
     pluginsCommand.clearPluginCache();
     await pluginsCommand.initializePluginCache();
-    
-    const intervals = await loadMinkyIntervalsFromDb();
-    for (const row of intervals) {
-      const channel = await client.channels.fetch(row.channel_id).catch(() => null);
-      if (channel) {
-        const key = `${row.guild_id}-${row.channel_id}`;
-        const timer = setInterval(() => sendMinkyToChannel(channel), row.interval_ms);
-        minkyIntervals[key] = {
-          timer,
-          interval: row.interval_str,
-          channelId: row.channel_id,
-          guildId: row.guild_id
-        };
-      }
-    }
-    console.log(`Loaded ${intervals.length} minky intervals from database`);
-
-    const savedStatus = await loadBotStatus();
-    if (savedStatus) {
-      try {
-        await client.user.setPresence({
-          activities: [{ name: savedStatus.message, type: activityTypes[savedStatus.activity] }],
-          status: savedStatus.status
-        });
-        console.log(`Restored bot status: ${savedStatus.status} - ${savedStatus.activity} ${savedStatus.message}`);
-      } catch (err) {
-        console.error('Error restoring bot status:', err);
-      }
-    }
   }
 };

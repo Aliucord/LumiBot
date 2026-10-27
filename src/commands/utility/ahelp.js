@@ -22,13 +22,8 @@ module.exports = {
           inline: false
         },
         {
-          name: '🐱 Fun Commands',
-          value: '`/minky` - Get a random Minky cat image\n`/minkyinterval [interval]` - Auto-post Minky images (seconds, 0 to stop)',
-          inline: false
-        },
-        {
           name: '📌 Prefix Commands',
-          value: 'Use `!` prefix for text-based versions of slash commands\n(e.g., `!search plugin`, `!minky`, `!ahelp`)',
+          value: 'Use `!` prefix for text-based versions of slash commands\n(e.g., `!search plugin`, `!ahelp`)',
           inline: false
         },
         {
@@ -58,13 +53,8 @@ module.exports = {
           inline: false
         },
         {
-          name: '🐱 Fun Commands',
-          value: '`/minky` - Get a random Minky cat image\n`/minkyinterval [interval]` - Auto-post Minky images (seconds, 0 to stop)',
-          inline: false
-        },
-        {
           name: '📌 Prefix Commands',
-          value: 'Use `!` prefix for text-based versions of slash commands\n(e.g., `!search plugin`, `!minky`, `!ahelp`)',
+          value: 'Use `!` prefix for text-based versions of slash commands\n(e.g., `!search plugin`, `!ahelp`)',
           inline: false
         },
         {

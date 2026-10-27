@@ -9,7 +9,6 @@ const client = createClient({
 });
 
 const responders = {};
-const minkyIntervals = {};
 const { runMigrations } = require('./migrations');
 
 async function initializeDatabase() {
@@ -27,34 +26,6 @@ async function initializeDatabase() {
       args: []
     });
     console.log('✓ Autoresponders table created');
-
-    // Create minky_intervals table if it doesn't exist
-    console.log('Creating minky_intervals table...');
-    await client.execute({
-      sql: `CREATE TABLE IF NOT EXISTS minky_intervals (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        guild_id TEXT NOT NULL,
-        channel_id TEXT NOT NULL,
-        interval_str TEXT NOT NULL,
-        interval_ms INTEGER NOT NULL,
-        UNIQUE(guild_id, channel_id)
-      )`,
-      args: []
-    });
-    console.log('✓ Minky intervals table created');
-
-    // Create bot_status table if it doesn't exist
-    console.log('Creating bot_status table...');
-    await client.execute({
-      sql: `CREATE TABLE IF NOT EXISTS bot_status (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        status TEXT NOT NULL,
-        activity TEXT NOT NULL,
-        message TEXT NOT NULL
-      )`,
-      args: []
-    });
-    console.log('✓ Bot status table created');
 
     console.log('Creating plugin_reviews table...');
     await client.execute({
@@ -156,66 +127,6 @@ async function deleteAutoresponderFromDb(guildId, trigger, channelId) {
     }
   } catch (err) {
     console.error('Error deleting autoresponder:', err);
-  }
-}
-
-async function saveMinkyInterval(guildId, channelId, intervalStr, intervalMs) {
-  try {
-    await client.execute({
-      sql: 'INSERT OR REPLACE INTO minky_intervals (guild_id, channel_id, interval_str, interval_ms) VALUES (?, ?, ?, ?)',
-      args: [guildId, channelId, intervalStr, intervalMs]
-    });
-  } catch (err) {
-    console.error('Error saving minky interval:', err);
-  }
-}
-
-async function deleteMinkyIntervalFromDb(guildId, channelId) {
-  try {
-    await client.execute({
-      sql: 'DELETE FROM minky_intervals WHERE guild_id = ? AND channel_id = ?',
-      args: [guildId, channelId]
-    });
-  } catch (err) {
-    console.error('Error deleting minky interval:', err);
-  }
-}
-
-async function loadMinkyIntervalsFromDb() {
-  try {
-    const result = await client.execute({
-      sql: 'SELECT * FROM minky_intervals',
-      args: []
-    });
-    return result.rows;
-  } catch (err) {
-    console.error('Error loading minky intervals:', err.message || err);
-    return [];
-  }
-}
-
-async function saveBotStatus(status, activity, message) {
-  try {
-    await client.execute('DELETE FROM bot_status');
-    await client.execute({
-      sql: 'INSERT INTO bot_status (status, activity, message) VALUES (?, ?, ?)',
-      args: [status, activity, message]
-    });
-  } catch (err) {
-    console.error('Error saving bot status:', err);
-  }
-}
-
-async function loadBotStatus() {
-  try {
-    const result = await client.execute({
-      sql: 'SELECT * FROM bot_status LIMIT 1',
-      args: []
-    });
-    return result.rows[0] || null;
-  } catch (err) {
-    console.error('Error loading bot status:', err.message || err);
-    return null;
   }
 }
 
@@ -353,16 +264,10 @@ async function deleteStickyMessage(guildId, channelId) {
 module.exports = {
   client,
   responders,
-  minkyIntervals,
   initializeDatabase,
   loadAutoresponders,
   saveAutoresponder,
   deleteAutoresponderFromDb,
-  saveMinkyInterval,
-  deleteMinkyIntervalFromDb,
-  loadMinkyIntervalsFromDb,
-  saveBotStatus,
-  loadBotStatus,
   savePluginReview,
   getPluginReviews,
   getUserReviews,

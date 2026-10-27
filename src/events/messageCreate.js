@@ -1,9 +1,7 @@
 
 const { responders } = require('../utils/db');
-const { sendMinkyToChannel } = require('../utils/helpers');
 const { parseMessage } = require('../utils/prefixParser');
 const { handleMessage: handleStickyMessage } = require('../utils/stickyManager');
-const spamProtection = require('../modules/spamProtection');
 
 module.exports = {
   name: 'messageCreate',

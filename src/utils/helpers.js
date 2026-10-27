@@ -16,21 +16,6 @@ function parseInterval(intervalStr) {
   return value * multipliers[unit];
 }
 
-async function sendMinkyToChannel(channel) {
-  try {
-    const response = await fetch(`https://minky.materii.dev?cb=${Date.now()}`);
-    const imageBuffer = Buffer.from(await response.arrayBuffer());
-    const attachment = new AttachmentBuilder(imageBuffer, { name: 'minky.jpg' });
-    
-    await channel.send({
-      content: "Here's a random Minky 🐱",
-      files: [attachment]
-    });
-  } catch (err) {
-    console.error('Failed to send scheduled Minky:', err);
-  }
-}
-
 function formatInterval(intervalStr) {
   const units = { m: 'minute(s)', h: 'hour(s)', d: 'day(s)' };
   const match = intervalStr.match(/^(\d+)(m|h|d)$/i);
@@ -39,6 +24,5 @@ function formatInterval(intervalStr) {
 
 module.exports = {
   parseInterval,
-  sendMinkyToChannel,
   formatInterval
 };

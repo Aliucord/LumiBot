@@ -13,7 +13,7 @@ module.exports = {
       .addFields(
         {
           name: '📚 Plugin Commands',
-          value: '`/beginner` - How to install Aliucord, plugins and themes\n`/search plugin [query]` - Search Aliucord plugins (in <#811263527239024640>)\n`/backports [search]` - Plugins that bring features from new Discord\n`/random-plugin` - Get a random plugin suggestion',
+          value: '`/beginner` - How to install Aliucord, plugins and themes\n`/fixes` - Plugins that fix broken features\n`/search plugin [query]` - Search Aliucord plugins (in <#811263527239024640>)\n`/backports [search]` - Plugins that bring features from new Discord\n`/random-plugin` - Get a random plugin suggestion',
           inline: false
         },
         {
@@ -44,7 +44,7 @@ module.exports = {
       .addFields(
         {
           name: '📚 Plugin Commands',
-          value: '`/beginner` - How to install Aliucord, plugins and themes\n`/search plugin [query]` - Search Aliucord plugins (in <#811263527239024640>)\n`/backports [search]` - Plugins that bring features from new Discord\n`/random-plugin` - Get a random plugin suggestion',
+          value: '`/beginner` - How to install Aliucord, plugins and themes\n`/fixes` - Plugins that fix broken features\n`/search plugin [query]` - Search Aliucord plugins (in <#811263527239024640>)\n`/backports [search]` - Plugins that bring features from new Discord\n`/random-plugin` - Get a random plugin suggestion',
           inline: false
         },
         {

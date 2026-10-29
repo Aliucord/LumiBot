@@ -3,12 +3,15 @@ const { SlashCommandBuilder, MessageFlags, ActionRowBuilder, ButtonBuilder, Butt
 // The Backports section of the Aliucord docs (https://yutaplug.github.io/Aliucord/#backports)
 const DOCS_URL = 'https://raw.githubusercontent.com/yutaplug/Aliucord/main/index.md';
 
+const CACHE_DURATION = 60 * 1000; // 1 minute
+
 const MESSAGE_LIMIT = 2000;
 const LEGEND = '-# 🚧 beta · ⚠️ maintenance · 💣 broken';
 const INSTALL_HINT = '\n​\n-# hold this message (not the links) to install';
 const MAX_SEARCH_LENGTH = 50;
 
-let lastBackports = null;
+let cachedBackports = null;
+let cacheTimestamp = 0;
 
 // [Name](url) -> [Name](<url>) so Discord doesn't embed every link
 function formatLinks(text) {
@@ -47,16 +50,21 @@ function parseBackports(markdown) {
   return { plugins, builtIn };
 }
 
-// Always fetches fresh; the last good copy is only used if the fetch fails
 async function fetchBackports() {
+  const now = Date.now();
+  if (cachedBackports && (now - cacheTimestamp) < CACHE_DURATION) {
+    return cachedBackports;
+  }
+
   try {
     const response = await fetch(DOCS_URL);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    lastBackports = parseBackports(await response.text());
+    cachedBackports = parseBackports(await response.text());
+    cacheTimestamp = now;
   } catch (err) {
     console.error('Error fetching backports:', err);
   }
-  return lastBackports;
+  return cachedBackports;
 }
 
 // Pack lines into pages that each fit in one message alongside the header and footer

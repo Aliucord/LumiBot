@@ -1,6 +1,6 @@
 const { PLUGINS_URL } = require('./serverConfig');
 
-const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours
+const CACHE_DURATION = 60 * 1000; // 1 minute
 
 let cachedPlugins = [];
 let cacheTimestamp = 0;

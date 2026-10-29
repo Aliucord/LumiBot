@@ -1,6 +1,6 @@
 const { THEMES_URL } = require('./serverConfig');
 
-const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours
+const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
 
 let cachedThemes = [];
 let cacheTimestamp = 0;
